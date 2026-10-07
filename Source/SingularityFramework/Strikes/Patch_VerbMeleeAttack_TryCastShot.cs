@@ -22,17 +22,21 @@ namespace SingularityFramework.Strikes
             Pawn attacker = __instance.CasterPawn;
             if (attacker == null) return;
 
-            // Moves that can't harm (shoving, kicking dust) aren't strikes.
             DamageDef damageDefinition = __instance.GetDamageDef();
             if (damageDefinition == null || !damageDefinition.harmsHealth) return;
 
             __state = StrikeTracker.BeginStrike(attacker, __instance);
         }
 
+        // Runs after other mods' postfixes so their strikes have already ended
+        // and damage from our on-hit effects isn't boosted by them.
+        [HarmonyPriority(Priority.Last)]
         public static void Postfix(Verb_MeleeAttack __instance, bool __state)
         {
             if (!__state) return;
             StrikeTracker.EndStrike(__instance.CasterPawn);
         }
     }
+
 }
+

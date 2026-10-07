@@ -57,8 +57,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Strikes\CompProperties_ChargedStrikes.cs" />
     <Compile Include="Strikes\IStrikeModifier.cs" />
     <Compile Include="Strikes\OnHitEffect.cs" />
+    <Compile Include="Strikes\OnHitEffect_AddHediff.cs" />
+    <Compile Include="Strikes\OnHitEffect_DrainMood.cs" />
     <Compile Include="Strikes\OnHitEffect_ExtraDamage.cs" />
     <Compile Include="Strikes\OnHitEffect_Stun.cs" />
     <Compile Include="Strikes\Patch_Thing_TakeDamage.cs" />
