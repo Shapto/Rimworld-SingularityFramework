@@ -55,9 +55,19 @@
       <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Equipment\CompAbilityEffect_SwitchWeapon.cs" />
+    <Compile Include="Equipment\CompResourceBar.cs" />
+    <Compile Include="Equipment\Patch_PawnEquipmentTracker_GetGizmos.cs" />
     <Compile Include="Geometry\LineStrike.cs" />
     <Compile Include="Equipment\Patch_PawnAbilityTracker_AllAbilitiesForReading.cs" />
     <Compile Include="Sequences\CompAbilityEffect_JumpSlam.cs" />
