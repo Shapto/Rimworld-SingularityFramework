@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/ThingDef[defName="MeleeWeapon_LongSword"]/comps</xpath>
+    <match Class="PatchOperationAdd">
+      <xpath>Defs/ThingDef[defName="MeleeWeapon_LongSword"]/comps</xpath>
+      <value>
+        <li Class="CompProperties_EquippableAbility">
+          <abilityDef>Sing_Test_Chain</abilityDef>
+        </li>
+        <li Class="CompProperties_EquippableAbility">
+          <abilityDef>Sing_Test_Jump</abilityDef>
+        </li>
+        <li Class="SingularityFramework.Equipment.CompProperties_WeaponForm">
+          <switchTo>MeleeWeapon_Gladius</switchTo>
+          <commandLabel>To gladius</commandLabel>
+        </li>
+      </value>
+    </match>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>Defs/ThingDef[defName="MeleeWeapon_LongSword"]</xpath>
+      <value>
+        <comps>
+          <li Class="CompProperties_EquippableAbility">
+            <abilityDef>Sing_Test_Chain</abilityDef>
+          </li>
+          <li Class="CompProperties_EquippableAbility">
+            <abilityDef>Sing_Test_Jump</abilityDef>
+          </li>
+          <li Class="SingularityFramework.Equipment.CompProperties_WeaponForm">
+            <switchTo>MeleeWeapon_Gladius</switchTo>
+            <commandLabel>To gladius</commandLabel>
+          </li>
+        </comps>
+      </value>
+    </nomatch>
+  </Operation>
+
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/ThingDef[defName="MeleeWeapon_Gladius"]/comps</xpath>
+    <match Class="PatchOperationAdd">
+      <xpath>Defs/ThingDef[defName="MeleeWeapon_Gladius"]/comps</xpath>
+      <value>
+        <li Class="SingularityFramework.Equipment.CompProperties_WeaponForm">
+          <switchTo>MeleeWeapon_LongSword</switchTo>
+          <commandLabel>To longsword</commandLabel>
+        </li>
+      </value>
+    </match>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>Defs/ThingDef[defName="MeleeWeapon_Gladius"]</xpath>
+      <value>
+        <comps>
+          <li Class="SingularityFramework.Equipment.CompProperties_WeaponForm">
+            <switchTo>MeleeWeapon_LongSword</switchTo>
+            <commandLabel>To longsword</commandLabel>
+          </li>
+        </comps>
+      </value>
+    </nomatch>
+  </Operation>
+</Patch>

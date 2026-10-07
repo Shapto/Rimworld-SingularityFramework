@@ -107,5 +107,25 @@ namespace SingularityFramework.WeaponAnchor
             Vector3 rotatedOffset = Quaternion.AngleAxis(drawAngle, Vector3.up) * new Vector3(localX, 0f, localY);
             return position + rotatedOffset;
         }
+
+        /// <summary>
+        /// Forgets pawns that are gone (destroyed, or dead and despawned), so the records don't grow forever.
+        /// </summary>
+        public static void RemoveStaleRecords()
+        {
+            var stalePawns = new List<Pawn>();
+            foreach (Pawn recordedPawn in recordsByPawn.Keys)
+            {
+                if (recordedPawn == null || recordedPawn.Destroyed || !recordedPawn.Spawned) stalePawns.Add(recordedPawn);
+            }
+
+            foreach (Pawn stalePawn in stalePawns)
+                recordsByPawn.Remove(stalePawn);
+        }
+
+        /// <summary>
+        /// Forgets everything, e.g. when a game is loaded. Records rebuild on the next frame.
+        /// </summary>
+        public static void ClearAll() => recordsByPawn.Clear();
     }
 }

@@ -25,6 +25,11 @@ namespace SingularityFramework.Strikes
         private static readonly Dictionary<Pawn, ActiveStrike> activeStrikes = new Dictionary<Pawn, ActiveStrike>();
 
         /// <summary>
+        /// Reused for every strike instead of copying the comps into a new list each swing.
+        /// </summary>
+        private static readonly List<object> candidateBuffer = new List<object>();
+
+        /// <summary>
         /// Before an attack: asks every comp on the attacker whether it wants to join, and keeps the ones that do.
         /// Returns true if any joined.
         /// </summary>
@@ -34,15 +39,20 @@ namespace SingularityFramework.Strikes
 
             activeStrikes.Remove(attacker);
 
-            var activeStrike = new ActiveStrike();
+            // Copied into the buffer first, so a modifier that changes the pawn's hediffs or gear while joining can't break the loop.
+            candidateBuffer.Clear();
+            candidateBuffer.AddRange(AllCandidateComps(attacker));
 
-            foreach (object candidate in AllCandidateComps(attacker).ToList())
+            ActiveStrike activeStrike = null;
+            foreach (object candidate in candidateBuffer)
             {
-                if (candidate is IStrikeModifier strikeModifier && strikeModifier.TryJoinStrike(attacker, attackVerb))
-                    activeStrike.modifiers.Add(strikeModifier);
+                if (!(candidate is IStrikeModifier strikeModifier) || !strikeModifier.TryJoinStrike(attacker, attackVerb)) continue;
+                if (activeStrike == null) activeStrike = new ActiveStrike();
+                activeStrike.modifiers.Add(strikeModifier);
             }
+            candidateBuffer.Clear();
 
-            if (activeStrike.modifiers.Count == 0) return false;
+            if (activeStrike == null) return false;
 
             activeStrikes[attacker] = activeStrike;
             return true;

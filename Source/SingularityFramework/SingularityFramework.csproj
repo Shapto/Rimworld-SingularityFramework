@@ -57,8 +57,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Equipment\CompProperties_WeaponForm.cs" />
-    <Compile Include="Equipment\Patch_PawnEquipmentTracker_GetGizmos.cs" />
+    <Compile Include="Equipment\CompAbilityEffect_SwitchWeapon.cs" />
     <Compile Include="Geometry\LineStrike.cs" />
     <Compile Include="Equipment\Patch_PawnAbilityTracker_AllAbilitiesForReading.cs" />
     <Compile Include="Sequences\CompAbilityEffect_JumpSlam.cs" />
@@ -81,6 +80,7 @@
     <Compile Include="Visuals\HediffCompProperties_Aura.cs" />
     <Compile Include="Visuals\WeaponEffects.cs" />
     <Compile Include="WeaponAnchor\BodyShapeAnalyzer.cs" />
+    <Compile Include="WeaponAnchor\GameComponent_WeaponDrawCleanup.cs" />
     <Compile Include="WeaponAnchor\Patch_AnimRenderer_Draw.cs" />
     <Compile Include="WeaponAnchor\Patch_PawnRenderUtility_DrawEquipmentAiming.cs" />
     <Compile Include="SingularityMod.cs" />
