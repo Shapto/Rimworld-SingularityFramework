@@ -19,9 +19,11 @@ This mod is intended as a dependency for other mods. It is lightweight on its ow
 
 ## Project structure
 
+- `1.6/` - RimWorld 1.6 content, including defs and compatibility files
 - `About/` - mod metadata and preview image
 - `Languages/` - localization files
 - `Source/SingularityFramework/` - compiled mod source code
+- `Source/SingularityFramework/Properties/` - assembly metadata
 - `Source/SingularityFramework/Equipment/` - equipment-related utilities and patches
 - `Source/SingularityFramework/Geometry/` - geometric strike helpers
 - `Source/SingularityFramework/Sequences/` - ability sequencing systems such as chain abilities, dashes, and slam behavior
@@ -104,7 +106,8 @@ The framework's entry point is the mod class:
 
 - `SingularityMod` - applies Harmony patches when the mod loads
 
+The project also includes RimWorld 1.6-specific content under `1.6/` for definitions and compatibility support.
+
 ## License
 
 This project is distributed under the MIT license. See `LICENSE` for details.
-
