@@ -14,7 +14,7 @@ namespace SingularityFramework.Relics
     public static class RelicAptitude
     {
         /// <summary>
-        /// The pawn's aptitude for the relic. Fixed per pawn and relic.
+        /// The pawn's aptitude for the relic. From the roll it's fixed per pawn and relic; from skills it changes as the pawn's skills do.
         /// </summary>
         public static AptitudeLevel GetAptitude(Pawn pawn, CompProperties_RelicAptitude aptitudeProperties, ThingDef relicDefinition)
         {

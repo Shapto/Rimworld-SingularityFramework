@@ -37,6 +37,9 @@ namespace SingularityFramework.Equipment
             ThingWithComps oldForm = caster?.equipment?.Primary;
             if (oldForm == null || Props.switchTo == null) return;
 
+            /// <summary>
+            /// When true, the switch ability tests aptitude before drawing, so an unworthy pawn's draw fails instead of the relic dropping afterwards.
+            /// </summary>
             CompProperties_RelicAptitude aptitudeProperties = Props.switchTo.GetCompProperties<CompProperties_RelicAptitude>();
             if (aptitudeProperties != null && aptitudeProperties.testedOnDraw)
             {

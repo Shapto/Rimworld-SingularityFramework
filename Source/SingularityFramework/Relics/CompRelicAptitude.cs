@@ -74,8 +74,8 @@ namespace SingularityFramework.Relics
 
 
     /// <summary>
-    /// Makes a weapon a relic: each pawn has a hidden aptitude for it, revealed the first time they try it.
-    /// Unworthy pawns are rejected; pawns with partial aptitude wield it with weaker stats.
+    /// Makes a weapon a relic: each pawn has an aptitude for it (from a hidden roll, guaranteed traits or genes, or skills), revealed the first time they try it.
+    /// Unworthy pawns can be rejected; pawns with partial or no aptitude can wield it with weaker stats.
     /// </summary>
     public class CompRelicAptitude : ThingComp
     {
