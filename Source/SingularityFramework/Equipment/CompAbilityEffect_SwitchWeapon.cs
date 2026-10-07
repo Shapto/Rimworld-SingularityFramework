@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using SingularityFramework.Relics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,17 @@ namespace SingularityFramework.Equipment
             Pawn caster = parent.pawn;
             ThingWithComps oldForm = caster?.equipment?.Primary;
             if (oldForm == null || Props.switchTo == null) return;
+
+            CompProperties_RelicAptitude aptitudeProperties = Props.switchTo.GetCompProperties<CompProperties_RelicAptitude>();
+            if (aptitudeProperties != null && aptitudeProperties.testedOnDraw)
+            {
+                AptitudeLevel aptitude = RelicAptitude.TestAndReveal(caster, aptitudeProperties, Props.switchTo);
+                if (aptitude == AptitudeLevel.Unworthy)
+                {
+                    RelicAptitude.ApplyRejection(caster, aptitudeProperties);
+                    return;
+                }
+            }
 
             var newForm = (ThingWithComps)ThingMaker.MakeThing(Props.switchTo, oldForm.Stuff);
             CopyStateTo(oldForm, newForm);
