@@ -57,6 +57,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Equipment\CompProperties_WeaponForm.cs" />
+    <Compile Include="Equipment\Patch_PawnEquipmentTracker_GetGizmos.cs" />
     <Compile Include="Geometry\LineStrike.cs" />
     <Compile Include="Equipment\Patch_PawnAbilityTracker_AllAbilitiesForReading.cs" />
     <Compile Include="Sequences\CompAbilityEffect_JumpSlam.cs" />

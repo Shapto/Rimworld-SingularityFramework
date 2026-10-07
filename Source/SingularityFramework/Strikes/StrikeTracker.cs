@@ -49,14 +49,6 @@ namespace SingularityFramework.Strikes
         }
 
         /// <summary>
-        /// Adds the candidate to the strike if it's a strike modifier that agrees to join.
-        /// </summary>
-        private static void TryAddModifier(object candidate, Pawn attacker, Verb attackVerb, ActiveStrike activeStrike)
-        {
-
-        }
-
-        /// <summary>
         /// While damage is being dealt: lets every joined modifier change it, and marks the strike as landed.
         /// Can run several times per strike (cleaves, extra damage), so once-per-swing effects belong in Notify_StrikeLanded.
         /// </summary>

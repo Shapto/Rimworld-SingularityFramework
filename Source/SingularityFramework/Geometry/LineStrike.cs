@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
-namespace SingularityFramework
+namespace SingularityFramework.Geometry
 {
     /// <summary>
     /// Everything a line strike needs. The caller fills it in; the framework never decides numbers.

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace SingularityFramework
+namespace SingularityFramework.Equipment
 {
     /// <summary>
     /// Vanilla only takes the first equippable ability comp on a weapon. This adds the abilities of every other one,
@@ -25,7 +25,6 @@ namespace SingularityFramework
 
         public static void Postfix(Pawn_AbilityTracker __instance, bool __state, List<Ability> __result)
         {
-            // Only when vanilla just rebuilt the list; otherwise it's the cached list, which already has them.
             if (!__state) return;
 
             ThingWithComps weapon = __instance.pawn.equipment?.Primary;

@@ -22,7 +22,10 @@ namespace SingularityFramework.Strikes
         /// Effects that happen only when a charged attack lands.
         /// </summary>
         public List<OnHitEffect> onHitEffectsWhenCharged;
+
+        public CompProperties_ChargedStrikes() => compClass = typeof(CompChargedStrikes);
     }
+
 
     /// <summary>
     /// Makes a weapon spend charges from its vanilla reloadable comp on every attack.

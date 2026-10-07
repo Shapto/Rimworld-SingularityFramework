@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using Verse.AI;
+using SingularityFramework.Geometry;
 
 namespace SingularityFramework.Sequences
 {
@@ -44,6 +45,7 @@ namespace SingularityFramework.Sequences
         protected override IEnumerable<Toil> MakeNewToils()
         {
             var dashToil = new Toil();
+            dashToil.AddFinishAction(() => pawn.Drawer.tweener.ResetTweenedPosToRoot());
             dashToil.initAction = () =>
             {
                 if (cellsEntered == 0 && progress == 0f) startCell = pawn.Position;
