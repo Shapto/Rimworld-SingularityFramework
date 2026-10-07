@@ -2,11 +2,9 @@
 
 A shared RimWorld mod framework for authoring combat, ability, and visual effects in other mods.
 
-This project does not add a standalone gameplay loop by itself. Instead, it provides reusable C# components, Harmony patches, and helper systems that other mods can depend on.
-
 ## Overview
 
-`Singularity Framework` is a framework mod built for RimWorld 1.6. It exists to centralize common patterns used by mod authors, especially around:
+`Singularity Framework` is a framework mod built for RimWorld 1.6. It exists to centralize common patterns used by me, especially around:
 
 - equipment form switching
 - ability chains and movement sequences
@@ -17,9 +15,7 @@ This project does not add a standalone gameplay loop by itself. Instead, it prov
 
 ## Mod purpose
 
-This mod is intended as a dependency for other mods. It is lightweight on its own and is not designed to be a complete playable expansion.
-
-The package metadata identifies it as a framework mod, and it depends on Harmony without adding any user-facing gameplay content by itself.
+This mod is intended as a dependency for other mods. It is lightweight on its own.
 
 ## Project structure
 
@@ -104,8 +100,6 @@ Examples:
 
 ## Notes for mod authors
 
-This repository is intentionally structured as a reusable toolkit rather than a content mod. In practice, other mods can depend on it by referencing the framework assembly and extending the provided comp/property classes for their own content.
-
 The framework's entry point is the mod class:
 
 - `SingularityMod` - applies Harmony patches when the mod loads
@@ -113,17 +107,4 @@ The framework's entry point is the mod class:
 ## License
 
 This project is distributed under the MIT license. See `LICENSE` for details.
-
-## Recommended workflow
-
-1. Add this mod as a dependency in your RimWorld mod.
-2. Use the framework's comp properties and patch patterns in your own def XML and C# classes.
-3. Build against the provided RimWorld 1.6 project setup and Harmony dependency.
-
-## Build status
-
-The project includes a .NET solution and project file for RimWorld mod development:
-
-- `Source/SingularityFramework/SingularityFramework.sln`
-- `Source/SingularityFramework/SingularityFramework.csproj`
 
