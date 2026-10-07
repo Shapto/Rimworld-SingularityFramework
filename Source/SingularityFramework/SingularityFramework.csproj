@@ -61,7 +61,8 @@
     <Compile Include="Strikes\OnHitEffect.cs" />
     <Compile Include="Strikes\OnHitEffect_ExtraDamage.cs" />
     <Compile Include="Strikes\OnHitEffect_Stun.cs" />
-    <Compile Include="Strikes\StrikeModifier.cs" />
+    <Compile Include="Strikes\Patch_Thing_TakeDamage.cs" />
+    <Compile Include="Strikes\Patch_VerbMeleeAttack_TryCastShot.cs" />
     <Compile Include="Strikes\StrikeTracker.cs" />
     <Compile Include="WeaponAnchor\BodyShapeAnalyzer.cs" />
     <Compile Include="WeaponAnchor\Patch_AnimRenderer_Draw.cs" />

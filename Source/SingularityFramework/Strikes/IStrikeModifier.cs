@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Verse;
 
 namespace SingularityFramework.Strikes
 {
     /// <summary>
-    /// Implemented by anything that offers strike modifiers: a weapon comp, a hediff comp, and so on.
-    /// The tracker asks the attacker's weapon and hediffs for these before every attack.
+    /// Implemented by anything that can change an attack: a weapon comp, a hediff comp, and so on.
+    /// The tracker finds these on the attacker's weapon and hediffs before every attack.
     /// </summary>
-    public interface IStrikeModifierProvider
+    public interface IStrikeModifier
     {
-        /// <summary>
-        /// The modifiers this provider offers for the next attack.
-        /// </summary>
-        IEnumerable<StrikeModifier> GetStrikeModifiers();
+        bool TryJoinStrike(Pawn attacker, Verb attackVerb);
+        void ModifyDamage(Pawn attacker, Thing target, ref DamageInfo damageInfo);
+        void Notify_StrikeLanded(Pawn attacker, Thing target);
+        void Notify_StrikeMissed(Pawn attacker);
     }
 }
