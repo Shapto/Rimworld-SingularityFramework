@@ -57,6 +57,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Strikes\IStrikeModifier.cs" />
+    <Compile Include="Strikes\OnHitEffect.cs" />
+    <Compile Include="Strikes\OnHitEffect_ExtraDamage.cs" />
+    <Compile Include="Strikes\OnHitEffect_Stun.cs" />
+    <Compile Include="Strikes\StrikeModifier.cs" />
+    <Compile Include="Strikes\StrikeTracker.cs" />
     <Compile Include="WeaponAnchor\BodyShapeAnalyzer.cs" />
     <Compile Include="WeaponAnchor\Patch_AnimRenderer_Draw.cs" />
     <Compile Include="WeaponAnchor\Patch_PawnRenderUtility_DrawEquipmentAiming.cs" />
