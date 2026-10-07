@@ -14,7 +14,7 @@ namespace SingularityFramework
     {
         public SingularityMod(ModContentPack content) : base(content)
         {
-            new Harmony("shapto.shinandmang").PatchAll();
+            new Harmony("shapto.singularity").PatchAll();
         }
     }
 }

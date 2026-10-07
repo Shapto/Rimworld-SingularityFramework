@@ -57,8 +57,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="WeaponAnchor\BodyShapeAnalyzer.cs" />
+    <Compile Include="WeaponAnchor\Patch_AnimRenderer_Draw.cs" />
+    <Compile Include="WeaponAnchor\Patch_PawnRenderUtility_DrawEquipmentAiming.cs" />
     <Compile Include="SingularityMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WeaponAnchor\WeaponDrawRecord.cs" />
+    <Compile Include="WeaponAnchor\WeaponShape.cs" />
+    <Compile Include="WeaponAnchor\WeaponShapeAnalyzer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

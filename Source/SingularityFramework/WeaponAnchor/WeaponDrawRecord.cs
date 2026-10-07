@@ -9,8 +9,8 @@ using Verse;
 namespace SingularityFramework.WeaponAnchor
 {
     /// <summary>
-    /// Where a pawn's weapon was drawn this frame. Filled by the vanilla drawing patch,
-    /// and later by animation mod patches, so the rings always follow the weapon as it's actually shown.
+    /// Where a pawn's weapon was drawn this frame. Filled by the vanilla drawing patch, and overridden by animation mod patches when they draw the weapon,
+    /// so effects anchored to the weapon always follow it as it's actually shown.
     /// </summary>
     public class WeaponDrawRecord
     {
