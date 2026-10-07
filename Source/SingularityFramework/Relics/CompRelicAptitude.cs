@@ -86,9 +86,6 @@ namespace SingularityFramework.Relics
         {
             base.Notify_Equipped(pawn);
 
-            // Relics tested on draw were already tested by the switch ability.
-            if (Props.testedOnDraw) return;
-
             if (RelicAptitude.TestAndReveal(pawn, Props, parent.def) == AptitudeLevel.Unworthy)
             {
                 RelicAptitude.ApplyRejection(pawn, Props);
@@ -108,11 +105,5 @@ namespace SingularityFramework.Relics
             return Props.partialStatOffsets.GetStatOffsetFromList(stat);
         }
 
-        public override string CompInspectStringExtra()
-        {
-            Pawn wielder = Wielder;
-            if (wielder == null || !GameComponent_RelicAptitude.Instance.IsKnown(wielder, RelicKey)) return null;
-            return "Sing_AptitudeOf".Translate(wielder.LabelShort, RelicAptitude.Label(RelicAptitude.GetAptitude(wielder, Props, parent.def)));
-        }
     }
 }
