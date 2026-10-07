@@ -58,10 +58,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Geometry\LineStrike.cs" />
+    <Compile Include="Equipment\Patch_PawnAbilityTracker_AllAbilitiesForReading.cs" />
+    <Compile Include="Sequences\CompAbilityEffect_JumpSlam.cs" />
     <Compile Include="Sequences\CompProperties_AbilityChain.cs" />
     <Compile Include="Sequences\CompProperties_AbilityLineDash.cs" />
     <Compile Include="Sequences\JobDriver_LineDash.cs" />
     <Compile Include="Sequences\Patch_Pawn_DrawPos.cs" />
+    <Compile Include="Sequences\PawnFlyer_LandingSlam.cs" />
+    <Compile Include="Sequences\Verb_CastAbilityLineDash.cs" />
     <Compile Include="Strikes\CompProperties_ChargedStrikes.cs" />
     <Compile Include="Strikes\IStrikeModifier.cs" />
     <Compile Include="Strikes\OnHitEffect.cs" />
@@ -72,6 +76,8 @@
     <Compile Include="Strikes\Patch_Thing_TakeDamage.cs" />
     <Compile Include="Strikes\Patch_VerbMeleeAttack_TryCastShot.cs" />
     <Compile Include="Strikes\StrikeTracker.cs" />
+    <Compile Include="Visuals\HediffCompProperties_Aura.cs" />
+    <Compile Include="Visuals\WeaponEffects.cs" />
     <Compile Include="WeaponAnchor\BodyShapeAnalyzer.cs" />
     <Compile Include="WeaponAnchor\Patch_AnimRenderer_Draw.cs" />
     <Compile Include="WeaponAnchor\Patch_PawnRenderUtility_DrawEquipmentAiming.cs" />
