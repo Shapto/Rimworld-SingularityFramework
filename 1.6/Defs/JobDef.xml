@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<JobDef>
+  <defName>Sing_LineDash</defName>
+  <driverClass>SingularityFramework.Sequences.JobDriver_LineDash</driverClass>
+  <reportString>dashing.</reportString>
+  <casualInterruptible>false</casualInterruptible>
+</JobDef>

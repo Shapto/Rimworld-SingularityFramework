@@ -22,8 +22,6 @@ namespace SingularityFramework.Strikes
         /// Effects that happen only when a charged attack lands.
         /// </summary>
         public List<OnHitEffect> onHitEffectsWhenCharged;
-
-        public CompProperties_ChargedStrikes() => compClass = typeof(CompChargedStrikes);
     }
 
     /// <summary>

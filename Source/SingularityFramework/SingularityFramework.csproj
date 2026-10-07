@@ -57,6 +57,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Geometry\LineStrike.cs" />
+    <Compile Include="Sequences\CompProperties_AbilityChain.cs" />
+    <Compile Include="Sequences\CompProperties_AbilityLineDash.cs" />
+    <Compile Include="Sequences\JobDriver_LineDash.cs" />
+    <Compile Include="Sequences\Patch_Pawn_DrawPos.cs" />
     <Compile Include="Strikes\CompProperties_ChargedStrikes.cs" />
     <Compile Include="Strikes\IStrikeModifier.cs" />
     <Compile Include="Strikes\OnHitEffect.cs" />
