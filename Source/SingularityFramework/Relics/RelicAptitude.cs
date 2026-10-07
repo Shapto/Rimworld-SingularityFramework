@@ -20,11 +20,33 @@ namespace SingularityFramework.Relics
         {
             if (HasGuaranteedAptitude(pawn, aptitudeProperties)) return AptitudeLevel.Full;
 
+            // Skill-based relics: aptitude comes from skills instead of the roll.
+            if (!aptitudeProperties.fullAptitudeSkills.NullOrEmpty() || !aptitudeProperties.partialAptitudeSkills.NullOrEmpty())
+            {
+                if (MeetsSkills(pawn, aptitudeProperties.fullAptitudeSkills)) return AptitudeLevel.Full;
+                if (MeetsSkills(pawn, aptitudeProperties.partialAptitudeSkills)) return AptitudeLevel.Partial;
+                return AptitudeLevel.Unworthy;
+            }
+
             int seed = pawn.thingIDNumber ^ GenText.StableStringHash(aptitudeProperties.RelicKey(relicDefinition));
             float roll = Rand.ValueSeeded(seed);
             if (roll < aptitudeProperties.fullAptitudeChance) return AptitudeLevel.Full;
             if (roll < aptitudeProperties.partialAptitudeChance) return AptitudeLevel.Partial;
             return AptitudeLevel.Unworthy;
+        }
+
+        /// <summary>
+        /// True if the pawn meets every requirement in the list. An empty list is never met, so a tier without requirements can't be reached.
+        /// </summary>
+        private static bool MeetsSkills(Pawn pawn, List<SkillRequirement> requirements)
+        {
+            if (requirements.NullOrEmpty() || pawn.skills == null) return false;
+
+            foreach (SkillRequirement requirement in requirements)
+            {
+                if (!requirement.PawnSatisfies(pawn)) return false;
+            }
+            return true;
         }
 
         /// <summary>

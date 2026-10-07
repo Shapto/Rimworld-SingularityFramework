@@ -40,10 +40,25 @@ namespace SingularityFramework.Relics
         public bool testedOnDraw;
 
         /// <summary>
-        /// Changes to the weapon's own stats while held by a wielder with only partial aptitude (e.g. MeleeWeapon_DamageMultiplier, MeleeWeapon_CooldownMultiplier).
+        /// When false, unworthy pawns can still wield the relic; they just get the unworthy stat changes.
+        /// </summary>
+        public bool rejectsUnworthy = true;
+
+        /// <summary>
+        /// Changes to the weapon's own stats while held by a wielder with partial or no aptitude
+        /// (e.g. MeleeWeapon_DamageMultiplier, or a mod's own stats like heat buildup).
         /// </summary>
         public List<StatModifier> partialStatFactors;
         public List<StatModifier> partialStatOffsets;
+        public List<StatModifier> unworthyStatFactors;
+        public List<StatModifier> unworthyStatOffsets;
+
+        /// <summary>
+        /// When set, aptitude comes from skills instead of the hidden roll: meeting every full requirement gives full aptitude,
+        /// meeting every partial one gives partial. Aptitude then grows as the pawn's skills do.
+        /// </summary>
+        public List<SkillRequirement> fullAptitudeSkills;
+        public List<SkillRequirement> partialAptitudeSkills;
 
         /// <summary>
         /// Given to an unworthy pawn when the relic rejects them. Both optional.
@@ -70,23 +85,13 @@ namespace SingularityFramework.Relics
 
         private Pawn Wielder => (parent.ParentHolder as Pawn_EquipmentTracker)?.pawn;
 
-        /// <summary>
-        /// True while the weapon is held by a pawn whose aptitude for it is only partial.
-        /// </summary>
-        private bool HeldWithPartialAptitude
-        {
-            get
-            {
-                Pawn wielder = Wielder;
-                return wielder != null && RelicAptitude.GetAptitude(wielder, Props, parent.def) == AptitudeLevel.Partial;
-            }
-        }
-
         public override void Notify_Equipped(Pawn pawn)
         {
             base.Notify_Equipped(pawn);
 
-            if (RelicAptitude.TestAndReveal(pawn, Props, parent.def) == AptitudeLevel.Unworthy)
+            // For relics tested on draw, the switch ability already refused unworthy pawns; this catches every other way of getting it.
+            AptitudeLevel aptitude = RelicAptitude.TestAndReveal(pawn, Props, parent.def);
+            if (aptitude == AptitudeLevel.Unworthy && Props.rejectsUnworthy)
             {
                 RelicAptitude.ApplyRejection(pawn, Props);
                 GameComponent_RelicAptitude.Instance.QueueDrop(pawn, parent);
@@ -95,14 +100,28 @@ namespace SingularityFramework.Relics
 
         public override float GetStatFactor(StatDef stat)
         {
-            if (Props.partialStatFactors.NullOrEmpty() || !HeldWithPartialAptitude) return 1f;
-            return Props.partialStatFactors.GetStatFactorFromList(stat);
+            List<StatModifier> statFactors = StatListForWielder(Props.partialStatFactors, Props.unworthyStatFactors);
+            return statFactors.NullOrEmpty() ? 1f : statFactors.GetStatFactorFromList(stat);
         }
 
         public override float GetStatOffset(StatDef stat)
         {
-            if (Props.partialStatOffsets.NullOrEmpty() || !HeldWithPartialAptitude) return 0f;
-            return Props.partialStatOffsets.GetStatOffsetFromList(stat);
+            List<StatModifier> statOffsets = StatListForWielder(Props.partialStatOffsets, Props.unworthyStatOffsets);
+            return statOffsets.NullOrEmpty() ? 0f : statOffsets.GetStatOffsetFromList(stat);
+        }
+
+        /// <summary>
+        /// The partial or unworthy list for the current wielder's aptitude. Null when nobody holds it or the wielder has full aptitude.
+        /// </summary>
+        private List<StatModifier> StatListForWielder(List<StatModifier> partialList, List<StatModifier> unworthyList)
+        {
+            Pawn wielder = Wielder;
+            if (wielder == null) return null;
+
+            AptitudeLevel aptitude = RelicAptitude.GetAptitude(wielder, Props, parent.def);
+            if (aptitude == AptitudeLevel.Partial) return partialList;
+            if (aptitude == AptitudeLevel.Unworthy) return unworthyList;
+            return null;
         }
 
     }
