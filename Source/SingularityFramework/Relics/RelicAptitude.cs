@@ -14,7 +14,7 @@ namespace SingularityFramework.Relics
     public static class RelicAptitude
     {
         /// <summary>
-        /// The pawn's aptitude for the relic. Fixed per pawn and relic: the roll is seeded, so it never changes.
+        /// The pawn's aptitude for the relic. Fixed per pawn and relic.
         /// </summary>
         public static AptitudeLevel GetAptitude(Pawn pawn, CompProperties_RelicAptitude aptitudeProperties, ThingDef relicDefinition)
         {
@@ -47,19 +47,6 @@ namespace SingularityFramework.Relics
         {
             if (aptitudeProperties.rejectionThought != null) pawn.needs?.mood?.thoughts?.memories?.TryGainMemory(aptitudeProperties.rejectionThought);
             if (aptitudeProperties.rejectionHediff != null) pawn.health.AddHediff(aptitudeProperties.rejectionHediff);
-        }
-
-        /// <summary>
-        /// Adds the partial aptitude hediff for partial aptitude, removes it otherwise.
-        /// </summary>
-        public static void UpdatePartialHediff(Pawn pawn, CompProperties_RelicAptitude aptitudeProperties, AptitudeLevel aptitude)
-        {
-            HediffDef partialHediff = aptitudeProperties.partialAptitudeHediff;
-            if (partialHediff == null) return;
-
-            Hediff existingHediff = pawn.health.hediffSet.GetFirstHediffOfDef(partialHediff);
-            if (aptitude == AptitudeLevel.Partial && existingHediff == null) pawn.health.AddHediff(partialHediff);
-            else if (aptitude != AptitudeLevel.Partial && existingHediff != null) pawn.health.RemoveHediff(existingHediff);
         }
 
         public static string Label(AptitudeLevel aptitude) => ("Sing_Aptitude_" + aptitude).Translate();

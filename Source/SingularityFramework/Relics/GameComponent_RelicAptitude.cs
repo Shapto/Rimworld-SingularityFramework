@@ -15,7 +15,6 @@ namespace SingularityFramework.Relics
     {
         public static GameComponent_RelicAptitude Instance => Current.Game.GetComponent<GameComponent_RelicAptitude>();
 
-        // "pawnID:relicKey" strings, so no pawn references are held or saved.
         private HashSet<string> knownAptitudes = new HashSet<string>();
 
         private readonly List<KeyValuePair<Pawn, ThingWithComps>> pendingDrops = new List<KeyValuePair<Pawn, ThingWithComps>>();

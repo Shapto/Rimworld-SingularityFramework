@@ -70,6 +70,10 @@
     <Compile Include="Equipment\Patch_PawnEquipmentTracker_GetGizmos.cs" />
     <Compile Include="Geometry\LineStrike.cs" />
     <Compile Include="Equipment\Patch_PawnAbilityTracker_AllAbilitiesForReading.cs" />
+    <Compile Include="Relics\CompAbilityEffect_RequiresAptitude.cs" />
+    <Compile Include="Relics\CompRelicAptitude.cs" />
+    <Compile Include="Relics\GameComponent_RelicAptitude.cs" />
+    <Compile Include="Relics\RelicAptitude.cs" />
     <Compile Include="Sequences\CompAbilityEffect_JumpSlam.cs" />
     <Compile Include="Sequences\CompProperties_AbilityChain.cs" />
     <Compile Include="Sequences\CompProperties_AbilityLineDash.cs" />
