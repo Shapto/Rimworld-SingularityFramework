@@ -61,6 +61,13 @@ namespace SingularityFramework.Relics
         public List<SkillRequirement> partialAptitudeSkills;
 
         /// <summary>
+        /// Given to the wielder while they hold the relic, by aptitude tier (strain, fatigue, pain). All optional.
+        /// </summary>
+        public HediffDef fullAptitudeWielderHediff;
+        public HediffDef partialAptitudeWielderHediff;
+        public HediffDef unworthyWielderHediff;
+
+        /// <summary>
         /// Given to an unworthy pawn when the relic rejects them. Both optional.
         /// </summary>
         public ThoughtDef rejectionThought;
@@ -95,7 +102,33 @@ namespace SingularityFramework.Relics
             {
                 RelicAptitude.ApplyRejection(pawn, Props);
                 GameComponent_RelicAptitude.Instance.QueueDrop(pawn, parent);
+                return;
             }
+
+            HediffDef wielderHediff = WielderHediffFor(aptitude);
+            if (wielderHediff != null && !pawn.health.hediffSet.HasHediff(wielderHediff)) pawn.health.AddHediff(wielderHediff);
+        }
+
+        public override void Notify_Unequipped(Pawn pawn)
+        {
+            base.Notify_Unequipped(pawn);
+            RemoveWielderHediff(pawn, Props.fullAptitudeWielderHediff);
+            RemoveWielderHediff(pawn, Props.partialAptitudeWielderHediff);
+            RemoveWielderHediff(pawn, Props.unworthyWielderHediff);
+        }
+
+        private HediffDef WielderHediffFor(AptitudeLevel aptitude)
+        {
+            if (aptitude == AptitudeLevel.Full) return Props.fullAptitudeWielderHediff;
+            if (aptitude == AptitudeLevel.Partial) return Props.partialAptitudeWielderHediff;
+            return Props.unworthyWielderHediff;
+        }
+
+        private static void RemoveWielderHediff(Pawn pawn, HediffDef hediffDefinition)
+        {
+            if (hediffDefinition == null) return;
+            Hediff existingHediff = pawn.health.hediffSet.GetFirstHediffOfDef(hediffDefinition);
+            if (existingHediff != null) pawn.health.RemoveHediff(existingHediff);
         }
 
         public override float GetStatFactor(StatDef stat)
