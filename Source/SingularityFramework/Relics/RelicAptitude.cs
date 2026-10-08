@@ -50,21 +50,6 @@ namespace SingularityFramework.Relics
             return true;
         }
 
-        /// <summary>
-        /// Gets the aptitude and, the first time, tells the player.
-        /// </summary>
-        public static AptitudeLevel TestAndReveal(Pawn pawn, CompProperties_RelicAptitude aptitudeProperties, ThingDef relicDefinition)
-        {
-            AptitudeLevel aptitude = GetAptitude(pawn, aptitudeProperties, relicDefinition);
-            string relicKey = aptitudeProperties.RelicKey(relicDefinition);
-
-            if (pawn.Faction == Faction.OfPlayer && pawn.Spawned && GameComponent_RelicAptitude.Instance.MarkKnown(pawn, relicKey))
-            {
-                string revealText = "Sing_AptitudeRevealedShort".Translate(relicDefinition.LabelCap, Label(aptitude));
-                MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, revealText, TierColor(aptitude), 3.5f);
-            }
-            return aptitude;
-        }
 
         /// <summary>
         /// The color tier text is shown in: green for full, yellow for partial, red for unworthy.

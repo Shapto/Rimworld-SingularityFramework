@@ -43,7 +43,7 @@ namespace SingularityFramework.Equipment
             CompProperties_RelicAptitude aptitudeProperties = Props.switchTo.GetCompProperties<CompProperties_RelicAptitude>();
             if (aptitudeProperties != null && aptitudeProperties.testedOnDraw)
             {
-                AptitudeLevel aptitude = RelicAptitude.TestAndReveal(caster, aptitudeProperties, Props.switchTo);
+                AptitudeLevel aptitude = RelicAptitude.GetAptitude(caster, aptitudeProperties, Props.switchTo);
                 if (aptitude == AptitudeLevel.Unworthy && aptitudeProperties.rejectsUnworthy)
                 {
                     RelicAptitude.ApplyRejection(caster, aptitudeProperties);
