@@ -26,7 +26,7 @@ namespace SingularityFramework.Strikes
             float hitAngle = (target.Position - attacker.Position).AngleFlat;
             ThingDef weaponDefinition = attacker.equipment?.Primary?.def;
 
-            var extraDamage = new DamageInfo(damageDefinition, damageAmount, armorPenetration, hitAngle, attacker, null, weaponDefinition);
+            DamageInfo extraDamage = new DamageInfo(damageDefinition, damageAmount, armorPenetration, hitAngle, attacker, null, weaponDefinition);
             if (ignoreArmor) extraDamage.SetIgnoreArmor(true);
             target.TakeDamage(extraDamage);
         }

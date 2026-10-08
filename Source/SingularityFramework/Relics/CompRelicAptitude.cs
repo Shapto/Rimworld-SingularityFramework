@@ -35,7 +35,7 @@ namespace SingularityFramework.Relics
         public List<GeneDef> guaranteedGenes;
 
         /// <summary>
-        /// When true, aptitude is tested when the relic is drawn (switch ability), not when it's equipped.
+        /// When true, the switch ability tests aptitude before drawing, so an unworthy pawn's draw fails instead of the relic dropping afterwards.
         /// </summary>
         public bool testedOnDraw;
 
@@ -54,11 +54,16 @@ namespace SingularityFramework.Relics
         public List<StatModifier> unworthyStatOffsets;
 
         /// <summary>
-        /// When set, aptitude comes from skills instead of the hidden roll: meeting every full requirement gives full aptitude,
-        /// meeting every partial one gives partial. Aptitude then grows as the pawn's skills do.
+        /// When set, aptitude comes from these requirements instead of the hidden roll, and changes live as the pawn does:
+        /// meeting every full requirement gives full aptitude, meeting every partial one gives partial.
         /// </summary>
-        public List<SkillRequirement> fullAptitudeSkills;
-        public List<SkillRequirement> partialAptitudeSkills;
+        public List<AptitudeRequirement> fullAptitudeRequirements;
+        public List<AptitudeRequirement> partialAptitudeRequirements;
+
+        /// <summary>
+        /// True when aptitude comes from requirements instead of the hidden roll.
+        /// </summary>
+        public bool UsesRequirementAptitude => !fullAptitudeRequirements.NullOrEmpty() || !partialAptitudeRequirements.NullOrEmpty();
 
         /// <summary>
         /// Given to the wielder while they hold the relic, by aptitude tier (strain, fatigue, pain). All optional.

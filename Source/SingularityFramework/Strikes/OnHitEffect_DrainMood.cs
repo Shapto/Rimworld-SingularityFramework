@@ -9,7 +9,7 @@ using Verse;
 namespace SingularityFramework.Strikes
 {
     /// <summary>
-    /// Takes mood from the target directly. Mood recovers on its own toward what the pawn's thoughts say it should be.
+    /// Takes mood from the target directly. Mood recovers on its own toward what the pawn's thoughts say it should be. Sinking!
     /// </summary>
     public class OnHitEffect_DrainMood : OnHitEffect
     {

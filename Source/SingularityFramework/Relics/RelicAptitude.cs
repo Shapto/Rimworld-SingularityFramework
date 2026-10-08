@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using Verse;
+using Verse.Noise;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SingularityFramework.Relics
 {
@@ -20,11 +23,11 @@ namespace SingularityFramework.Relics
         {
             if (HasGuaranteedAptitude(pawn, aptitudeProperties)) return AptitudeLevel.Full;
 
-            // Skill-based relics: aptitude comes from skills instead of the roll.
-            if (!aptitudeProperties.fullAptitudeSkills.NullOrEmpty() || !aptitudeProperties.partialAptitudeSkills.NullOrEmpty())
+            // Requirement-based relics: aptitude comes from the pawn's skills, capacities and stats instead of the roll.
+            if (aptitudeProperties.UsesRequirementAptitude)
             {
-                if (MeetsSkills(pawn, aptitudeProperties.fullAptitudeSkills)) return AptitudeLevel.Full;
-                if (MeetsSkills(pawn, aptitudeProperties.partialAptitudeSkills)) return AptitudeLevel.Partial;
+                if (MeetsRequirements(pawn, aptitudeProperties.fullAptitudeRequirements)) return AptitudeLevel.Full;
+                if (MeetsRequirements(pawn, aptitudeProperties.partialAptitudeRequirements)) return AptitudeLevel.Partial;
                 return AptitudeLevel.Unworthy;
             }
 
@@ -38,11 +41,11 @@ namespace SingularityFramework.Relics
         /// <summary>
         /// True if the pawn meets every requirement in the list. An empty list is never met, so a tier without requirements can't be reached.
         /// </summary>
-        private static bool MeetsSkills(Pawn pawn, List<SkillRequirement> requirements)
+        private static bool MeetsRequirements(Pawn pawn, List<AptitudeRequirement> requirements)
         {
-            if (requirements.NullOrEmpty() || pawn.skills == null) return false;
+            if (requirements.NullOrEmpty() || pawn == null) return false;
 
-            foreach (SkillRequirement requirement in requirements)
+            foreach (AptitudeRequirement requirement in requirements)
             {
                 if (!requirement.PawnSatisfies(pawn)) return false;
             }
@@ -57,12 +60,22 @@ namespace SingularityFramework.Relics
             AptitudeLevel aptitude = GetAptitude(pawn, aptitudeProperties, relicDefinition);
             string relicKey = aptitudeProperties.RelicKey(relicDefinition);
 
-            if (GameComponent_RelicAptitude.Instance.MarkKnown(pawn, relicKey) && pawn.Faction == Faction.OfPlayer)
+            if (pawn.Faction == Faction.OfPlayer && pawn.Spawned && GameComponent_RelicAptitude.Instance.MarkKnown(pawn, relicKey))
             {
-                MessageTypeDef messageType = aptitude == AptitudeLevel.Unworthy ? MessageTypeDefOf.NegativeEvent : MessageTypeDefOf.PositiveEvent;
-                Messages.Message("Sing_AptitudeRevealed".Translate(pawn.LabelShort, relicDefinition.label, Label(aptitude)), pawn, messageType);
+                string revealText = "Sing_AptitudeRevealedShort".Translate(relicDefinition.LabelCap, Label(aptitude));
+                MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, revealText, TierColor(aptitude), 3.5f);
             }
             return aptitude;
+        }
+
+        /// <summary>
+        /// The color tier text is shown in: green for full, yellow for partial, red for unworthy.
+        /// </summary>
+        public static Color TierColor(AptitudeLevel aptitude)
+        {
+            if (aptitude == AptitudeLevel.Unworthy) return ColorLibrary.RedReadable;
+            if (aptitude == AptitudeLevel.Partial) return Color.yellow;
+            return Color.green;
         }
 
         public static void ApplyRejection(Pawn pawn, CompProperties_RelicAptitude aptitudeProperties)
@@ -72,6 +85,21 @@ namespace SingularityFramework.Relics
         }
 
         public static string Label(AptitudeLevel aptitude) => ("Sing_Aptitude_" + aptitude).Translate();
+
+        public static string DescribeAptitude(Pawn pawn, CompProperties_RelicAptitude aptitudeProperties, ThingDef relicDefinition)
+        {
+            if (pawn == null) return string.Empty;
+            AptitudeLevel aptitude = GetAptitude(pawn, aptitudeProperties, relicDefinition);
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine("Sing_AptitudeCurrent".Translate(Label(aptitude)));
+            List<AptitudeRequirement> nextTierRequirements = aptitude == AptitudeLevel.Unworthy ? aptitudeProperties.partialAptitudeRequirements : aptitude == AptitudeLevel.Partial ? aptitudeProperties.fullAptitudeRequirements : null;
+            if (!nextTierRequirements.NullOrEmpty())
+            {
+                foreach (AptitudeRequirement requirement in nextTierRequirements)
+                    builder.AppendLine(requirement.Describe(pawn));
+            }
+            return builder.ToString().TrimEndNewlines();
+        }
 
         private static bool HasGuaranteedAptitude(Pawn pawn, CompProperties_RelicAptitude aptitudeProperties)
         {
