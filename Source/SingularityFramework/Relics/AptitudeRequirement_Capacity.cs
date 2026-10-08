@@ -18,6 +18,8 @@ namespace SingularityFramework.Relics
     {
         public PawnCapacityDef capacity;
 
+        protected override float Tolerance => 0.005f;
+
         public override float CurrentValue(Pawn pawn) => pawn.health?.capacities?.GetLevel(capacity) ?? 0f;
 
         public override string Label => capacity.LabelCap;

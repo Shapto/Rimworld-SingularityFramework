@@ -15,6 +15,8 @@ namespace SingularityFramework.Relics
     {
         public StatDef stat;
 
+        protected override float Tolerance => 0.005f;
+
         public override float CurrentValue(Pawn pawn) => pawn.GetStatValue(stat);
 
         public override string Label => stat.LabelCap;

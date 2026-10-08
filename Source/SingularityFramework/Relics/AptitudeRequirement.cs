@@ -26,6 +26,12 @@ namespace SingularityFramework.Relics
         public abstract string Label { get; }
 
         /// <summary>
+        /// How far below the minimum still counts as meeting it, matching the rounding the player sees.
+        /// Without it, a stat that shows "5.50 / 5.50" can still fail because it's really 5.4999995.
+        /// </summary>
+        protected virtual float Tolerance => 0f;
+
+        /// <summary>
         /// Turns a value into text the way the player is used to seeing it (a level, a percentage, cells per second).
         /// </summary>
         protected abstract string FormatValue(float value);
@@ -35,7 +41,7 @@ namespace SingularityFramework.Relics
         /// </summary>
         public bool PawnSatisfies(Pawn pawn)
         {
-            return pawn != null && CurrentValue(pawn) >= minimum;
+            return pawn != null && CurrentValue(pawn) >= minimum - Tolerance;
         }
 
         /// <summary>
