@@ -138,12 +138,14 @@ namespace SingularityFramework.Relics
 
         public override float GetStatFactor(StatDef stat)
         {
+            if (Props.partialStatFactors.NullOrEmpty() && Props.unworthyStatFactors.NullOrEmpty()) return 1f;
             List<StatModifier> statFactors = StatListForWielder(Props.partialStatFactors, Props.unworthyStatFactors);
             return statFactors.NullOrEmpty() ? 1f : statFactors.GetStatFactorFromList(stat);
         }
 
         public override float GetStatOffset(StatDef stat)
         {
+            if (Props.partialStatFactors.NullOrEmpty() && Props.unworthyStatFactors.NullOrEmpty()) return 0f;
             List<StatModifier> statOffsets = StatListForWielder(Props.partialStatOffsets, Props.unworthyStatOffsets);
             return statOffsets.NullOrEmpty() ? 0f : statOffsets.GetStatOffsetFromList(stat);
         }

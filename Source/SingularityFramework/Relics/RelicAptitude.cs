@@ -6,8 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using Verse.Noise;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SingularityFramework.Relics
 {

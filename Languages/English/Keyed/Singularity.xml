@@ -5,8 +5,8 @@
   <Sing_Aptitude_Unworthy>unworthy</Sing_Aptitude_Unworthy>
   <Sing_Aptitude_Partial>partial aptitude</Sing_Aptitude_Partial>
   <Sing_Aptitude_Full>full aptitude</Sing_Aptitude_Full>
-  <Sing_AptitudeRevealed>{0} tried {1}: {2}.</Sing_AptitudeRevealed>
   <Sing_AptitudeTooLow>Requires {0}.</Sing_AptitudeTooLow>
   <Sing_AptitudeRequirementLine>{0}: {1} / {2}</Sing_AptitudeRequirementLine>
   <Sing_AptitudeCurrent>Aptitude: {0}</Sing_AptitudeCurrent>
+  <Sing_AptitudeRevealedShort>{0}: {1}</Sing_AptitudeRevealedShort>
 </LanguageData>
