@@ -21,13 +21,6 @@ namespace SingularityFramework.Relics
 
         public GameComponent_RelicAptitude(Game game) { }
 
-        public bool IsKnown(Pawn pawn, string relicKey) => knownAptitudes.Contains(pawn.thingIDNumber + ":" + relicKey);
-
-        /// <summary>
-        /// Marks the aptitude as known. Returns true if it wasn't known before.
-        /// </summary>
-        public bool MarkKnown(Pawn pawn, string relicKey) => knownAptitudes.Add(pawn.thingIDNumber + ":" + relicKey);
-
         public void QueueDrop(Pawn pawn, ThingWithComps relic) => pendingDrops.Add(new KeyValuePair<Pawn, ThingWithComps>(pawn, relic));
 
         public override void GameComponentTick()
@@ -49,8 +42,6 @@ namespace SingularityFramework.Relics
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Collections.Look(ref knownAptitudes, "knownAptitudes", LookMode.Value);
-            if (Scribe.mode == LoadSaveMode.PostLoadInit && knownAptitudes == null) knownAptitudes = new HashSet<string>();
         }
     }
 }

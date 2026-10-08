@@ -103,7 +103,7 @@ namespace SingularityFramework.Relics
             base.Notify_Equipped(pawn);
 
             // For relics tested on draw, the switch ability already refused unworthy pawns; this catches every other way of getting it.
-            AptitudeLevel aptitude = RelicAptitude.TestAndReveal(pawn, Props, parent.def);
+            AptitudeLevel aptitude = RelicAptitude.GetAptitude(pawn, Props, parent.def);
             if (aptitude == AptitudeLevel.Unworthy && Props.rejectsUnworthy)
             {
                 RelicAptitude.ApplyRejection(pawn, Props);
