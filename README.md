@@ -26,6 +26,7 @@ This mod is intended as a dependency for other mods. It is lightweight on its ow
 - `Source/SingularityFramework/Properties/` - assembly metadata
 - `Source/SingularityFramework/Equipment/` - equipment-related utilities and patches
 - `Source/SingularityFramework/Geometry/` - geometric strike helpers
+- `Source/SingularityFramework/Relics/` - relic-related systems and effects
 - `Source/SingularityFramework/Sequences/` - ability sequencing systems such as chain abilities, dashes, and slam behavior
 - `Source/SingularityFramework/Strikes/` - charged-strike and on-hit effect logic
 - `Source/SingularityFramework/Visuals/` - aura and visual effect components
