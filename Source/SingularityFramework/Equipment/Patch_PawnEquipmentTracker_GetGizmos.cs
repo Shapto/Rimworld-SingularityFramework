@@ -21,11 +21,16 @@ namespace SingularityFramework.Equipment
 
             if (!__instance.pawn.IsColonistPlayerControlled) yield break;
 
-            CompResourceBar resourceBar = __instance.Primary?.TryGetComp<CompResourceBar>();
-            if (resourceBar == null) yield break;
+            ThingWithComps weapon = __instance.Primary;
+            if (weapon == null) yield break;
 
-            foreach (Gizmo barGizmo in resourceBar.GetBarGizmos())
-                yield return barGizmo;
+            foreach (ThingComp weaponComp in weapon.AllComps)
+            {
+                if (!(weaponComp is IEquippedGizmoProvider gizmoProvider)) continue;
+
+                foreach (Gizmo providedGizmo in gizmoProvider.GetEquippedGizmos(__instance.pawn))
+                    yield return providedGizmo;
+            }
         }
     }
 }

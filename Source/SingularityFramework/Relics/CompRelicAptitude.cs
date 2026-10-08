@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using SingularityFramework.Equipment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,7 +90,7 @@ namespace SingularityFramework.Relics
     /// Makes a weapon a relic: each pawn has an aptitude for it (from a hidden roll, guaranteed traits or genes, or skills), revealed the first time they try it.
     /// Unworthy pawns can be rejected; pawns with partial or no aptitude can wield it with weaker stats.
     /// </summary>
-    public class CompRelicAptitude : ThingComp
+    public class CompRelicAptitude : ThingComp, IEquippedGizmoProvider
     {
         public CompProperties_RelicAptitude Props => (CompProperties_RelicAptitude)props;
 
@@ -148,6 +149,14 @@ namespace SingularityFramework.Relics
             if (Props.partialStatOffsets.NullOrEmpty() && Props.unworthyStatOffsets.NullOrEmpty()) return 0f;
             List<StatModifier> statOffsets = StatListForWielder(Props.partialStatOffsets, Props.unworthyStatOffsets);
             return statOffsets.NullOrEmpty() ? 0f : statOffsets.GetStatOffsetFromList(stat);
+        }
+
+        /// <summary>
+        /// The aptitude status box, shown while a pawn holds the relic.
+        /// </summary>
+        public IEnumerable<Gizmo> GetEquippedGizmos(Pawn wielder)
+        {
+            yield return new Gizmo_RelicAptitude { aptitudeComp = this, wielder = wielder };
         }
 
         /// <summary>

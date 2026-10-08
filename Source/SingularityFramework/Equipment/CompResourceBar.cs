@@ -25,7 +25,7 @@ namespace SingularityFramework.Equipment
     /// Shows the weapon's vanilla reloadable charges (ammo, charge) as a bar gizmo while equipped.
     /// Needs a CompEquippableAbilityReloadable on the same weapon.
     /// </summary>
-    public class CompResourceBar : ThingComp
+    public class CompResourceBar : ThingComp, IEquippedGizmoProvider
     {
         private Texture2D cachedBarTexture;
 
@@ -47,7 +47,7 @@ namespace SingularityFramework.Equipment
 
         public string BarLabel => Props.label.NullOrEmpty() ? ReloadableComp?.Props.chargeNoun.CapitalizeFirst() : Props.label;
 
-        public IEnumerable<Gizmo> GetBarGizmos()
+        public IEnumerable<Gizmo> GetEquippedGizmos(Pawn wielder)
         {
             if (ReloadableComp == null) yield break;
             yield return new Gizmo_ResourceBar { resourceBar = this };
