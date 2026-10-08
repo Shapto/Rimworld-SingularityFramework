@@ -1,0 +1,640 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SingularityFramework</name>
+    </assembly>
+    <members>
+        <member name="F:SingularityFramework.Equipment.CompProperties_AbilitySwitchWeapon.switchTo">
+            <summary>
+            The ThingDef the caster's weapon turns into.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Equipment.CompAbilityEffect_SwitchWeapon">
+            <summary>
+            Replaces the caster's weapon with another form (sheathed and unsheathed, ...).
+            The new form keeps the old one's material, quality, condition, biocoding and remaining charges.
+            Draw time and sound come from the ability's verb (warmupTime, soundCast).
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Equipment.CompProperties_ResourceBar.label">
+            <summary>
+            Shown above the bar. Leave empty to use the reloadable comp's charge noun (e.g. "burner charge").
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Equipment.CompResourceBar">
+            <summary>
+            Shows the weapon's vanilla reloadable charges (ammo, charge) as a bar gizmo while equipped.
+            Needs a CompEquippableAbilityReloadable on the same weapon.
+            </summary>
+        </member>
+        <member name="P:SingularityFramework.Equipment.CompResourceBar.BarTexture">
+            <summary>
+            Made on first draw, which is always on the main thread.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Equipment.Gizmo_ResourceBar">
+            <summary>
+            A bar with a label above it and "current / maximum" on it.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Equipment.IEquippedGizmoProvider">
+            <summary>
+            A weapon comp that shows gizmos for its wielder while equipped (status boxes, bars).
+            Vanilla only asks one comp for equipment gizmos, so the framework asks every comp that implements this.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Equipment.Patch_PawnEquipmentTracker_GetGizmos">
+            <summary>
+            Adds resource bar gizmos for the wielder's weapon. Vanilla only asks one comp for equipment gizmos.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Equipment.Patch_PawnAbilityTracker_AllAbilitiesForReading">
+            <summary>
+            Vanilla only takes the first equippable ability comp on a weapon. This adds the abilities of every other one,
+            so a weapon can grant several abilities by listing several comps.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Geometry.LineStrikeSettings">
+            <summary>
+            Everything a line strike needs. The caller fills it in; the framework never decides numbers.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Geometry.LineStrike">
+            <summary>
+            A strike along a straight line of cells. Can be used all at once (a beam), or one cell at a time (a dash).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Geometry.LineStrike.CellsOnLine(Verse.IntVec3,Verse.IntVec3)">
+            <summary>
+            The cells from one point to another, in order, without the starting cell.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Geometry.LineStrike.IsLineWalkable(Verse.IntVec3,Verse.IntVec3,Verse.Map,SingularityFramework.Geometry.LineStrikeSettings)">
+            <summary>
+            True if a pawn could travel the whole line: every cell walkable, no walls or closed doors in the way.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Geometry.LineStrike.GetBlocker(Verse.IntVec3,Verse.Map)">
+            <summary>
+            The building blocking this cell, if any: a full wall or a closed door. Null if the cell is open.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Geometry.LineStrike.CanPierce(Verse.Building,SingularityFramework.Geometry.LineStrikeSettings)">
+            <summary>
+            True if the strike is allowed to go through this blocker at all.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Geometry.LineStrike.HitCell(Verse.IntVec3,Verse.LocalTargetInfo)">
+            <summary>
+            Damages every eligible pawn standing in the cell. Each pawn is hit at most once per strike.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Geometry.LineStrike.HitWholeLine(Verse.IntVec3,Verse.IntVec3,Verse.LocalTargetInfo)">
+            <summary>
+            Hits the whole line at once, like a beam.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Relics.AptitudeRequirement">
+            <summary>
+            One condition a pawn has to meet for a relic aptitude tier.
+            Written in XML as a list, with Class="SingularityFramework.Relics.AptitudeRequirement_..." on each entry.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Relics.AptitudeRequirement.CurrentValue(Verse.Pawn)">
+            <summary>
+            The pawn's current value for this requirement.
+            </summary>
+        </member>
+        <member name="P:SingularityFramework.Relics.AptitudeRequirement.Label">
+            <summary>
+            The requirement's name as the player sees it, e.g. "Melee" or "Move speed".
+            </summary>
+        </member>
+        <member name="P:SingularityFramework.Relics.AptitudeRequirement.Tolerance">
+            <summary>
+            How far below the minimum still counts as meeting it, matching the rounding the player sees.
+            Without it, a stat that shows "5.50 / 5.50" can still fail because it's really 5.4999995.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Relics.AptitudeRequirement.FormatValue(System.Single)">
+            <summary>
+            Turns a value into text the way the player is used to seeing it (a level, a percentage, cells per second).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Relics.AptitudeRequirement.PawnSatisfies(Verse.Pawn)">
+            <summary>
+            True if the pawn's current value is at least the minimum.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Relics.AptitudeRequirement.Describe(Verse.Pawn)">
+            <summary>
+            A line like "Manipulation: 84% / 90%", colored by whether it's met.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Relics.AptitudeRequirement_Capacity">
+            <summary>
+            Represents an aptitude requirement based on a specific pawn capacity.
+            </summary>
+            <remarks>This class evaluates whether a pawn meets a requirement by checking the level of a specified
+            capacity, such as movement or manipulation. It is typically used in scenarios where certain actions or roles
+            require a minimum capacity level.</remarks>
+        </member>
+        <member name="T:SingularityFramework.Relics.AptitudeRequirement_Skill">
+            <summary>
+            Requires a minimum level in one skill, e.g. Melee 18.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Relics.AptitudeRequirement_Stat">
+            <summary>
+            Represents an aptitude requirement based on a specific stat value for a pawn.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Relics.CompAbilityEffect_RequiresAptitude">
+            <summary>
+            Disables the ability unless the caster's aptitude for their held relic is high enough.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Relics.CompProperties_RelicAptitude.relicKey">
+            <summary>
+            Shared by every form of the same relic, so sheathed and unsheathed forms give the same aptitude. Defaults to the defName.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Relics.CompProperties_RelicAptitude.fullAptitudeChance">
+            <summary>
+            Chance of full aptitude, and of at least partial aptitude. Everyone else is unworthy.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Relics.CompProperties_RelicAptitude.guaranteedTraits">
+            <summary>
+            Pawns with any of these always have full aptitude ("tied to blood"). Use MayRequire in XML for DLC genes.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Relics.CompProperties_RelicAptitude.testedOnDraw">
+            <summary>
+            When true, the switch ability tests aptitude before drawing, so an unworthy pawn's draw fails instead of the relic dropping afterwards.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Relics.CompProperties_RelicAptitude.rejectsUnworthy">
+            <summary>
+            When false, unworthy pawns can still wield the relic; they just get the unworthy stat changes.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Relics.CompProperties_RelicAptitude.partialStatFactors">
+            <summary>
+            Changes to the weapon's own stats while held by a wielder with partial or no aptitude
+            (e.g. MeleeWeapon_DamageMultiplier, or a mod's own stats like heat buildup).
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Relics.CompProperties_RelicAptitude.fullAptitudeRequirements">
+            <summary>
+            When set, aptitude comes from these requirements instead of the hidden roll, and changes live as the pawn does:
+            meeting every full requirement gives full aptitude, meeting every partial one gives partial.
+            </summary>
+        </member>
+        <member name="P:SingularityFramework.Relics.CompProperties_RelicAptitude.UsesRequirementAptitude">
+            <summary>
+            True when aptitude comes from requirements instead of the hidden roll.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Relics.CompProperties_RelicAptitude.fullAptitudeWielderHediff">
+            <summary>
+            Given to the wielder while they hold the relic, by aptitude tier (strain, fatigue, pain). All optional.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Relics.CompProperties_RelicAptitude.rejectionThought">
+            <summary>
+            Given to an unworthy pawn when the relic rejects them. Both optional.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Relics.CompRelicAptitude">
+            <summary>
+            Makes a weapon a relic: each pawn has an aptitude for it (from a hidden roll, guaranteed traits or genes, or skills), revealed the first time they try it.
+            Unworthy pawns can be rejected; pawns with partial or no aptitude can wield it with weaker stats.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Relics.CompRelicAptitude.GetEquippedGizmos(Verse.Pawn)">
+            <summary>
+            The aptitude status box, shown while a pawn holds the relic.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Relics.CompRelicAptitude.StatListForWielder(System.Collections.Generic.List{RimWorld.StatModifier},System.Collections.Generic.List{RimWorld.StatModifier})">
+            <summary>
+            The partial or unworthy list for the current wielder's aptitude. Null when nobody holds it or the wielder has full aptitude.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Relics.GameComponent_RelicAptitude">
+            <summary>
+            Remembers which pawns have learned their aptitude for which relics, and drops rejected relics on the next tick
+            (dropping in the middle of equipping isn't safe).
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Relics.Gizmo_RelicAptitude">
+            <summary>
+            A status box showing the wielder's current aptitude for their relic, with what's missing for the next tier on hover.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Relics.RelicAptitude">
+            <summary>
+            Works out, reveals and applies relic aptitude.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Relics.RelicAptitude.GetAptitude(Verse.Pawn,SingularityFramework.Relics.CompProperties_RelicAptitude,Verse.ThingDef)">
+            <summary>
+            The pawn's aptitude for the relic. From the roll it's fixed per pawn and relic; from skills it changes as the pawn's skills do.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Relics.RelicAptitude.MeetsRequirements(Verse.Pawn,System.Collections.Generic.List{SingularityFramework.Relics.AptitudeRequirement})">
+            <summary>
+            True if the pawn meets every requirement in the list. An empty list is never met, so a tier without requirements can't be reached.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Relics.RelicAptitude.TierColor(SingularityFramework.Relics.AptitudeLevel)">
+            <summary>
+            The color tier text is shown in: green for full, yellow for partial, red for unworthy.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Relics.RelicAptitude.Label(SingularityFramework.Relics.AptitudeLevel)">
+            <summary>
+            Gets the localized label for the specified singing aptitude level.
+            </summary>
+            <remarks>The returned label is localized based on the current language settings. If a
+            translation is not available for the specified aptitude level, the fallback behavior of the translation
+            system applies.</remarks>
+            <param name="aptitude">The aptitude level for which to retrieve the label.</param>
+            <returns>A localized string representing the label of the specified aptitude level.</returns>
+        </member>
+        <member name="M:SingularityFramework.Relics.RelicAptitude.DescribeAptitude(Verse.Pawn,SingularityFramework.Relics.CompProperties_RelicAptitude,Verse.ThingDef)">
+            <summary>
+            Generates a descriptive summary of a pawn's aptitude for a specified relic, including current aptitude level
+            and requirements for the next tier, if applicable.
+            </summary>
+            <remarks>The returned string is intended for display in user interfaces and is localized using
+            the game's translation system. If the pawn has already reached the highest aptitude tier, no further
+            requirements are listed.</remarks>
+            <param name="pawn">The pawn whose aptitude is being described. If null, an empty string is returned.</param>
+            <param name="aptitudeProperties">The aptitude properties that define the requirements and tiers for the relic.</param>
+            <param name="relicDefinition">The definition of the relic for which the pawn's aptitude is evaluated.</param>
+            <returns>A string containing the pawn's current aptitude level and, if applicable, the requirements needed to reach
+            the next aptitude tier. Returns an empty string if the pawn is null.</returns>
+        </member>
+        <member name="F:SingularityFramework.Sequences.CompProperties_AbilityJumpSlam.flyerDefinition">
+            <summary>
+            The flyer ThingDef, with thingClass PawnFlyer_LandingSlam and a ModExtension_LandingSlam.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Sequences.CompAbilityEffect_JumpSlam">
+            <summary>
+            Jumps the caster to the target cell and slams on landing.
+            In a chained ability, only acts on the final stage.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Sequences.CompProperties_AbilityChain.stageWindowTicks">
+            <summary>
+            How long the player has to use the next stage before the chain resets. 300 ticks is 5 seconds.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Sequences.CompProperties_AbilityChain.cooldownAfterFinalStageTicks">
+            <summary>
+            Cooldown after the final stage. Kept here instead of on the AbilityDef, because a vanilla cooldown refills charges.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Sequences.CompAbilityEffect_Chain">
+            <summary>
+            Turns one ability into a chain of stages: each cast does the current stage and moves to the next.
+            The chain resets if the next stage isn't used in time, and goes on cooldown after the final stage.
+            </summary>
+        </member>
+        <member name="P:SingularityFramework.Sequences.CompAbilityEffect_Chain.CurrentStage">
+            <summary>
+            The stage the next cast will perform, from 0. Falls back to 0 once the window has run out.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Sequences.CompProperties_AbilityLineDash.cellsPerTick">
+            <summary>
+            Dash speed in cells per tick. 0.5 crosses 10 cells in 20 ticks (a third of a second).
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Sequences.CompAbilityEffect_LineDash">
+            <summary>
+            Dashes the caster in a straight line to the target cell, damaging what's on the way.
+            In a chained ability, does nothing on the final stage, so the finisher can take over.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Sequences.JobDriver_LineDash">
+            <summary>
+            Slides the pawn along a straight line without pathing. The pawn really occupies each cell as it passes,
+            so it stays hittable, it damages what it meets, and stops early if a wall survives being hit.
+            </summary>
+        </member>
+        <member name="P:SingularityFramework.Sequences.JobDriver_LineDash.CurrentDrawPosition">
+            <summary>
+            Where the pawn should be drawn this frame
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Sequences.Patch_Pawn_DrawPos">
+            <summary>
+            A dashing pawn is drawn at its exact point along the line, so it glides instead of hopping between cells.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Sequences.ModExtension_LandingSlam">
+            <summary>
+            Settings for a landing slam, put on the flyer's ThingDef as a mod extension.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Sequences.PawnFlyer_LandingSlam">
+            <summary>
+            A vanilla-style jump flyer that slams the landing spot with an explosion. The pawn can't be hit while airborne,
+            since flyers take it off the map for the flight. The jumper is never hurt by their own slam.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Sequences.Verb_CastAbilityLineDash">
+            <summary>
+            Ability verb for line dashes: while aiming, outlines every cell the dash will cross,
+            and refuses targets the dash can't reach in a straight line.
+            On the final stage of a chained ability, falls back to vanilla targeting for the finisher.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Strikes.CompProperties_ChargedStrikes.damageFactorWhenCharged">
+            <summary>
+            Damage multiplier when the attack had charge to spend, and when the weapon was empty.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Strikes.CompProperties_ChargedStrikes.onHitEffectsWhenCharged">
+            <summary>
+            Effects that happen only when a charged attack lands.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Strikes.CompChargedStrikes">
+            <summary>
+            Makes a weapon spend charges from its vanilla reloadable comp on every attack.
+            Charged attacks can deal more damage and trigger on-hit effects; empty attacks can be weaker.
+            Needs a CompEquippableAbilityReloadable on the same weapon.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Strikes.IStrikeModifier">
+            <summary>
+            Implemented by anything that can change an attack: a weapon comp, a hediff comp, and so on.
+            The tracker finds these on the attacker's weapon and hediffs before every attack.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Strikes.OnHitEffect">
+            <summary>
+            A small effect that happens when an attack lands (extra damage or a stun).
+            Written in XML as a list on a comp, with Class="SingularityFramework.Strikes.OnHitEffect_..." on each entry.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Strikes.OnHitEffect.chance">
+            <summary>
+            Chance from 0 to 1 that this effect happens on a given hit.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Strikes.OnHitEffect.Apply(Verse.Pawn,Verse.Thing)">
+            <summary>
+            Does the effect. Only called when the chance roll succeeded and the target can still be affected.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Strikes.OnHitEffect.TryApply(Verse.Pawn,Verse.Thing)">
+            <summary>
+            Rolls the chance and applies the effect if the target is still there to be hit.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Strikes.OnHitEffect.TryApplyAll(System.Collections.Generic.List{SingularityFramework.Strikes.OnHitEffect},Verse.Pawn,Verse.Thing)">
+            <summary>
+            Applies every effect in the list, the whole list repeated "repeatCount" times.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Strikes.OnHitEffect_AddHediff">
+            <summary>
+            Adds a hediff to the target, or to the attacker for self-buffs. Hitting again adds to the existing hediff's severity.
+            What the hediff does, its maximum and how fast it fades are all set on the HediffDef in XML.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Strikes.OnHitEffect_DrainMood">
+            <summary>
+            Takes mood from the target directly. Mood recovers on its own toward what the pawn's thoughts say it should be. Sinking!
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Strikes.OnHitEffect_ExtraDamage">
+            <summary>
+            Deals one more instance of damage of a chosen type to the target, separate from the attack itself.
+            It goes through the target's armor on its own, so a burn against heat-resistant armor can do very little.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Strikes.OnHitEffect_Stun">
+            <summary>
+            Stuns the target for a set time. The RimWorld-native stand-in for Tremor.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Strikes.OnHitEffect_Stun.stunTicks">
+            <summary>
+            How long the stun lasts. 60 ticks is one second.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Strikes.OnHitEffect_Stun.skipIfAlreadyStunned">
+            <summary>
+            When true, a target that's already stunned isn't stunned again, so repeated hits can't chain a stun forever.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Strikes.Patch_Thing_TakeDamage">
+            <summary>
+            Every attack's damage passes through Thing.TakeDamage. If the attacker is in the middle of a strike,
+            its modifiers get to change the damage, and the strike counts as landed.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Strikes.Patch_VerbMeleeAttack_TryCastShot">
+            <summary>
+            Wraps every melee attack in a strike: modifiers join right before the swing,
+            and learn whether it landed right after.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Strikes.StrikeTracker">
+            <summary>
+            Remembers which strike modifiers joined each pawn's current attack, and whether that attack landed.
+            Driven by the attack patches; modifiers never call this themselves.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Strikes.StrikeTracker.candidateBuffer">
+            <summary>
+            Reused for every strike instead of copying the comps into a new list each swing.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Strikes.StrikeTracker.BeginStrike(Verse.Pawn,Verse.Verb)">
+            <summary>
+            Before an attack: asks every comp on the attacker whether it wants to join, and keeps the ones that do.
+            Returns true if any joined.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Strikes.StrikeTracker.ModifyDamage(Verse.Pawn,Verse.Thing,Verse.DamageInfo@)">
+            <summary>
+            While damage is being dealt: lets every joined modifier change it, and marks the strike as landed.
+            Can run several times per strike (cleaves, extra damage), so once-per-swing effects belong in Notify_StrikeLanded.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Strikes.StrikeTracker.EndStrike(Verse.Pawn)">
+            <summary>
+            After the attack: tells every joined modifier whether it landed, then forgets the strike.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Strikes.StrikeTracker.AllCandidateComps(Verse.Pawn)">
+            <summary>
+            Every comp on the attacker that could be a strike modifier: weapon comps, worn apparel comps and hediff comps.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Visuals.HediffCompProperties_Aura.onlyWhileDrafted">
+            <summary>
+            When true, the aura only shows while the pawn is drafted.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Visuals.HediffComp_Aura">
+            <summary>
+            Shows an aura on the pawn for as long as this hediff is on them.
+            Several aura hediffs on one pawn simply stack their glows.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Visuals.WeaponEffects">
+            <summary>
+            Spawns visual effects at points on a pawn's held weapon, as it's currently drawn (including animation mods).
+            Positions along the weapon use the tip zone: 0 is the handle side, 1 is the tip.
+            Falls back to the pawn's position when the weapon isn't visible.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.WeaponEffects.TryGetZonePointInWorld(Verse.Pawn,System.Single,UnityEngine.Vector3@,System.Single@)">
+            <summary>
+            The world position of a point in the weapon's tip zone, and the angle the weapon runs at there.
+            Returns false (with the pawn's position) when the weapon wasn't drawn recently.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.WeaponEffects.TryGetMuzzleInWorld(Verse.Pawn,UnityEngine.Vector3@)">
+            <summary>
+            The world position of the weapon's muzzle (ranged weapons, or the gun part of a gunblade).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.WeaponEffects.ThrowFleckAtZonePoint(Verse.Pawn,Verse.FleckDef,System.Single,System.Single)">
+            <summary>
+            Throws a fleck at a point in the weapon's tip zone, rotated to match the weapon there.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.WeaponEffects.ThrowFleckAtMuzzle(Verse.Pawn,Verse.FleckDef,System.Single)">
+            <summary>
+            Throws a fleck at the weapon's muzzle.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.WeaponAnchor.BodyShapeAnalyzer">
+            <summary>
+            How wide a pawn's torso is in its body texture, and where the body starts and ends vertically.
+            Results are cached per texture. Must run on the main thread, since it reads textures.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.WeaponAnchor.GameComponent_WeaponDrawCleanup">
+            <summary>
+            Keeps the weapon draw records from holding onto pawns that are gone.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.WeaponAnchor.Patch_AnimRenderer_Draw">
+            <summary>
+            Animation mods built on the AM.AnimRenderer (Melee Animation and the mods sharing its renderer) draw weapons themselves.
+            After each animation frame, records every animated weapon's final transform, so effects anchored to the weapon follow the animation.
+            Skipped entirely if no such renderer is installed.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.WeaponAnchor.Patch_AnimRenderer_Draw.Prepare">
+            <summary>
+            Finds AM.AnimRenderer's classes by name. Returning false makes Harmony skip this patch.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.WeaponAnchor.Patch_PawnRenderUtility_DrawEquipmentAiming">
+            <summary>
+            Records where each held weapon is drawn, using the same angle and mirroring math as vanilla.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.WeaponAnchor.WeaponDrawRecord">
+            <summary>
+            Where a pawn's weapon was drawn this frame. Filled by the vanilla drawing patch, and overridden by animation mod patches when they draw the weapon,
+            so effects anchored to the weapon always follow it as it's actually shown.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponDrawRecord.RecordMatrix(Verse.Pawn,Verse.ThingDef,UnityEngine.Matrix4x4,System.Boolean,System.Boolean)">
+            <summary>
+            Records a weapon drawn with a full transform matrix (for example by an animation mod).
+            The matrix maps the weapon's quad (-0.5 to 0.5 on x and z) to the world, like vanilla's plane mesh.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponDrawRecord.TryGetCurrent(Verse.Pawn,SingularityFramework.WeaponAnchor.WeaponDrawRecord@)">
+            <summary>
+            The pawn's weapon transform, only if it was drawn this frame (otherwise the weapon isn't visible).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponDrawRecord.SpriteLengthToWorld(System.Single)">
+            <summary>
+            Turns a length in sprite units into world units, using the weapon's average draw size.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponDrawRecord.SpritePointToWorld(UnityEngine.Vector2)">
+            <summary>
+            Turns a point on the weapon's sprite (in sprite units, -0.5 to 0.5) into a position in the world.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponDrawRecord.RemoveStaleRecords">
+            <summary>
+            Forgets pawns that are gone (destroyed, or dead and despawned), so the records don't grow forever.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponDrawRecord.ClearAll">
+            <summary>
+            Forgets everything, e.g. when a game is loaded. Records rebuild on the next frame.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.WeaponAnchor.WeaponShape">
+            <summary>
+            The shape of a weapon sprite, in sprite units (the texture spans -0.5 to 0.5).
+            The tip zone is a stretch of the weapon's spine near its far end, where effects can attach to the weapon.
+            Positions in the zone run from the handle side (0) toward the tip (1).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponShape.TryGetZonePoint(System.Single,UnityEngine.Vector2@,UnityEngine.Vector2@,System.Single@)">
+            <summary>
+            The point at a given fraction of the tip zone (0 = handle side, 1 = tip),
+            which way the weapon runs there, and how wide it is.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponShape.TryGetSlotPlacement(System.Int32,System.Int32,UnityEngine.Vector2@,UnityEngine.Vector2@,System.Single@)">
+            <summary>
+            Where slot number "slotIndex" (0 = handle side) of "slotCount" evenly spaced slots sits in the tip zone,
+            for effects that line up several items along the weapon. A single slot goes in the middle.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.WeaponAnchor.WeaponShapeAnalyzer">
+            <summary>
+            Works out the shape of any weapon from its texture: its forward direction, length, muzzle, and the tip zone where effects attach.
+            Works for every weapon mod without per-weapon setup. Results are cached per weapon type.
+            Must run on the main thread, since it reads textures.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponShapeAnalyzer.TryFindMeleeForward(UnityEngine.Color[],System.Int32,System.Int32,System.Single,UnityEngine.Vector2@)">
+            <summary>
+            Finds a melee weapon's forward direction from its pixels: the long axis, pointing toward the heavier half
+            (the blade or head), refined along the front part so hilts and crossguards don't tilt it.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponShapeAnalyzer.SliceCenter(UnityEngine.Color[],System.Int32,System.Int32,UnityEngine.Vector2,System.Single,System.Single)">
+            <summary>
+            The average position of the visible pixels within the band around a point along the weapon.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponShapeAnalyzer.TryMeasureSlice(UnityEngine.Color[],System.Int32,System.Int32,UnityEngine.Vector2,UnityEngine.Vector2,System.Single,System.Single@,System.Single@)">
+            <summary>
+            The weapon's width and center line across one slice. False if the slice has no visible pixels.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponShapeAnalyzer.ReadPixels(UnityEngine.Texture2D)">
+            <summary>
+            Textures on the graphics card can't be read directly, so this copies one into a readable form.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponShapeAnalyzer.LocalPosition(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            A pixel's position in sprite units (-0.5 to 0.5), with Unity textures starting at the bottom-left.
+            </summary>
+        </member>
+    </members>
+</doc>
