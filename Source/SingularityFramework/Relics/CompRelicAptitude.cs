@@ -145,7 +145,7 @@ namespace SingularityFramework.Relics
 
         public override float GetStatOffset(StatDef stat)
         {
-            if (Props.partialStatFactors.NullOrEmpty() && Props.unworthyStatFactors.NullOrEmpty()) return 0f;
+            if (Props.partialStatOffsets.NullOrEmpty() && Props.unworthyStatOffsets.NullOrEmpty()) return 0f;
             List<StatModifier> statOffsets = StatListForWielder(Props.partialStatOffsets, Props.unworthyStatOffsets);
             return statOffsets.NullOrEmpty() ? 0f : statOffsets.GetStatOffsetFromList(stat);
         }

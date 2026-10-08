@@ -11,8 +11,6 @@ namespace SingularityFramework.Relics
     /// <summary>
     /// Represents an aptitude requirement based on a specific stat value for a pawn.
     /// </summary>
-    /// <remarks>Use this class to define requirements that depend on a pawn's stat, such as skill level or
-    /// attribute. The requirement is evaluated using the stat defined by the associated StatDef.</remarks>
     public class AptitudeRequirement_Stat : AptitudeRequirement
     {
         public StatDef stat;

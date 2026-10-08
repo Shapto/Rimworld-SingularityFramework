@@ -82,8 +82,28 @@ namespace SingularityFramework.Relics
             if (aptitudeProperties.rejectionHediff != null) pawn.health.AddHediff(aptitudeProperties.rejectionHediff);
         }
 
+        /// <summary>
+        /// Gets the localized label for the specified singing aptitude level.
+        /// </summary>
+        /// <remarks>The returned label is localized based on the current language settings. If a
+        /// translation is not available for the specified aptitude level, the fallback behavior of the translation
+        /// system applies.</remarks>
+        /// <param name="aptitude">The aptitude level for which to retrieve the label.</param>
+        /// <returns>A localized string representing the label of the specified aptitude level.</returns>
         public static string Label(AptitudeLevel aptitude) => ("Sing_Aptitude_" + aptitude).Translate();
 
+        /// <summary>
+        /// Generates a descriptive summary of a pawn's aptitude for a specified relic, including current aptitude level
+        /// and requirements for the next tier, if applicable.
+        /// </summary>
+        /// <remarks>The returned string is intended for display in user interfaces and is localized using
+        /// the game's translation system. If the pawn has already reached the highest aptitude tier, no further
+        /// requirements are listed.</remarks>
+        /// <param name="pawn">The pawn whose aptitude is being described. If null, an empty string is returned.</param>
+        /// <param name="aptitudeProperties">The aptitude properties that define the requirements and tiers for the relic.</param>
+        /// <param name="relicDefinition">The definition of the relic for which the pawn's aptitude is evaluated.</param>
+        /// <returns>A string containing the pawn's current aptitude level and, if applicable, the requirements needed to reach
+        /// the next aptitude tier. Returns an empty string if the pawn is null.</returns>
         public static string DescribeAptitude(Pawn pawn, CompProperties_RelicAptitude aptitudeProperties, ThingDef relicDefinition)
         {
             if (pawn == null) return string.Empty;
