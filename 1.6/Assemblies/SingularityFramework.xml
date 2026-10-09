@@ -504,6 +504,12 @@
             Returns false (with the pawn's position) when the weapon wasn't drawn recently.
             </summary>
         </member>
+        <member name="M:SingularityFramework.Visuals.WeaponEffects.TipInWorld(Verse.ThingDef,UnityEngine.Matrix4x4)">
+            <summary>
+            The world position of a weapon's tip when the weapon's sprite is drawn with this matrix by something other than a pawn,
+            such as a thrown weapon in flight. Uses the same tip point the shape analyzer finds for held weapons.
+            </summary>
+        </member>
         <member name="M:SingularityFramework.Visuals.WeaponEffects.TryGetMuzzleInWorld(Verse.Pawn,UnityEngine.Vector3@)">
             <summary>
             The world position of the weapon's muzzle (ranged weapons, or the gun part of a gunblade).

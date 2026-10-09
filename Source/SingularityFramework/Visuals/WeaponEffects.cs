@@ -38,6 +38,16 @@ namespace SingularityFramework.Visuals
         }
 
         /// <summary>
+        /// The world position of a weapon's tip when the weapon's sprite is drawn with this matrix by something other than a pawn,
+        /// such as a thrown weapon in flight. Uses the same tip point the shape analyzer finds for held weapons.
+        /// </summary>
+        public static Vector3 TipInWorld(ThingDef weaponDefinition, Matrix4x4 drawMatrix)
+        {
+            Vector2 tipPoint = WeaponShapeAnalyzer.GetShape(weaponDefinition).muzzlePoint;
+            return drawMatrix.MultiplyPoint3x4(new Vector3(tipPoint.x, 0f, tipPoint.y));
+        }
+
+        /// <summary>
         /// The world position of the weapon's muzzle (ranged weapons, or the gun part of a gunblade).
         /// </summary>
         public static bool TryGetMuzzleInWorld(Pawn pawn, out Vector3 worldPosition)
