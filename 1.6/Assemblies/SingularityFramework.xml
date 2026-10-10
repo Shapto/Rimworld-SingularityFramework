@@ -357,6 +357,11 @@
             The chain resets if the next stage isn't used in time, and goes on cooldown after the final stage.
             </summary>
         </member>
+        <member name="P:SingularityFramework.Sequences.CompAbilityEffect_Chain.ChargingStage">
+            <summary>
+            The stage whose charge-up is running right now, or -1. The charge-up job reads this when it finishes.
+            </summary>
+        </member>
         <member name="M:SingularityFramework.Sequences.CompAbilityEffect_Chain.SettingsForStage(System.Int32)">
             <summary>
             The settings for a stage, or null if it has none.
@@ -421,6 +426,11 @@
             Settings for a landing slam, put on the flyer's ThingDef as a mod extension.
             </summary>
         </member>
+        <member name="T:SingularityFramework.Sequences.ILandingSlamListener">
+            <summary>
+            A comp on the jumper's weapon that wants to know when a landing slam has hit, e.g. to overheat after a finisher.
+            </summary>
+        </member>
         <member name="T:SingularityFramework.Sequences.PawnFlyer_LandingSlam">
             <summary>
             A vanilla-style jump flyer that slams the landing spot with an explosion. The pawn can't be hit while airborne,
@@ -432,6 +442,11 @@
             Ability verb for line dashes: while aiming, outlines every cell the dash will cross,
             and refuses targets the dash can't reach in a straight line.
             On the final stage of a chained ability, falls back to vanilla targeting for the finisher.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Sequences.Verb_CastAbilityLineDash.DrawLandingSlamRadius(Verse.LocalTargetInfo)">
+            <summary>
+            On the finisher stage, outlines the area the landing slam will hit.
             </summary>
         </member>
         <member name="F:SingularityFramework.Strikes.CompProperties_ChargedStrikes.spendChargesOnMiss">

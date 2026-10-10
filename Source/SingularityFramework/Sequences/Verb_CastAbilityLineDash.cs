@@ -35,12 +35,27 @@ namespace SingularityFramework.Sequences
             if (!IsDashStage || !target.IsValid)
             {
                 base.DrawHighlight(target);
+                DrawLandingSlamRadius(target);
                 return;
             }
 
             List<IntVec3> lineCells = LineStrike.CellsOnLine(CasterPawn.Position, target.Cell);
             Color previewColor = ValidateTarget(target, false) ? LinePreviewColor : Color.red;
             GenDraw.DrawFieldEdges(lineCells, previewColor);
+        }
+
+        /// <summary>
+        /// On the finisher stage, outlines the area the landing slam will hit.
+        /// </summary>
+        private void DrawLandingSlamRadius(LocalTargetInfo target)
+        {
+            if (!target.IsValid || IsDashStage) return;
+
+            CompAbilityEffect_JumpSlam slamComp = ability?.CompOfType<CompAbilityEffect_JumpSlam>();
+            ModExtension_LandingSlam slamSettings = slamComp?.Props.flyerDefinition?.GetModExtension<ModExtension_LandingSlam>();
+            if (slamSettings == null) return;
+
+            GenDraw.DrawRadiusRing(target.Cell, slamSettings.radius);
         }
 
         public override bool ValidateTarget(LocalTargetInfo target, bool showMessages = true)

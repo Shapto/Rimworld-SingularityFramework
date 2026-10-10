@@ -22,7 +22,7 @@ namespace SingularityFramework.Sequences
     /// Jumps the caster to the target cell and slams on landing.
     /// In a chained ability, only acts on the final stage.
     /// </summary>
-    public class CompAbilityEffect_JumpSlam : CompAbilityEffect
+    public class CompAbilityEffect_JumpSlam : CompAbilityEffect, IChainStageAction
     {
         public new CompProperties_AbilityJumpSlam Props => (CompProperties_AbilityJumpSlam)props;
 

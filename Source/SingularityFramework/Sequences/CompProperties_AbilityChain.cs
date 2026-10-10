@@ -47,6 +47,12 @@ namespace SingularityFramework.Sequences
         private int cooldownEndsAtTick = -1;
         private int stageCastThisTick;
         private int lastCastTick = -1;
+        private int chargingStage = -1;
+
+        /// <summary>
+        /// The stage whose charge-up is running right now, or -1. The charge-up job reads this when it finishes.
+        /// </summary>
+        public int ChargingStage => chargingStage;
 
         /// <summary>
         /// The settings for a stage, or null if it has none.
@@ -87,7 +93,7 @@ namespace SingularityFramework.Sequences
 
             Job chargeUpJob = JobMaker.MakeJob(Props.chargeUpJob, target);
             chargeUpJob.ability = parent;
-            chargeUpJob.count = stage;
+            chargingStage = stage;
             parent.pawn.jobs.StartJob(chargeUpJob, JobCondition.InterruptForced);
             return true;
         }
@@ -126,6 +132,7 @@ namespace SingularityFramework.Sequences
             Scribe_Values.Look(ref storedStage, "storedStage", 0);
             Scribe_Values.Look(ref chainExpiresAtTick, "chainExpiresAtTick", -1);
             Scribe_Values.Look(ref cooldownEndsAtTick, "cooldownEndsAtTick", -1);
+            Scribe_Values.Look(ref chargingStage, "chargingStage", -1);
         }
     }
 }

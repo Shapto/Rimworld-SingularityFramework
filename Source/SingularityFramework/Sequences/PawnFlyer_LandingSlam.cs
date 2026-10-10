@@ -22,6 +22,14 @@ namespace SingularityFramework.Sequences
     }
 
     /// <summary>
+    /// A comp on the jumper's weapon that wants to know when a landing slam has hit, e.g. to overheat after a finisher.
+    /// </summary>
+    public interface ILandingSlamListener
+    {
+        void Notify_LandingSlamLanded(Pawn jumper);
+    }
+
+    /// <summary>
     /// A vanilla-style jump flyer that slams the landing spot with an explosion. The pawn can't be hit while airborne,
     /// since flyers take it off the map for the flight. The jumper is never hurt by their own slam.
     /// </summary>
@@ -58,6 +66,14 @@ namespace SingularityFramework.Sequences
                 explosionSound: slamSettings.explosionSound,
                 weapon: landingPawn?.equipment?.Primary?.def,
                 ignoredThings: ignoredThings);
+
+
+            List<ThingComp> weaponComps = landingPawn?.equipment?.Primary?.AllComps;
+            if (weaponComps == null) return;
+            foreach (ThingComp weaponComp in weaponComps)
+            {
+                if (weaponComp is ILandingSlamListener landingListener) landingListener.Notify_LandingSlamLanded(landingPawn);
+            }
         }
     }
 }

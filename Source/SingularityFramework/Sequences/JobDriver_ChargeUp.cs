@@ -19,8 +19,9 @@ namespace SingularityFramework.Sequences
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            int stage = job.count;
-            ChainStageSettings stageSettings = job.ability?.CompOfType<CompAbilityEffect_Chain>()?.SettingsForStage(stage);
+            CompAbilityEffect_Chain chain = job.ability?.CompOfType<CompAbilityEffect_Chain>();
+            int stage = chain?.ChargingStage ?? -1;
+            ChainStageSettings stageSettings = chain?.SettingsForStage(stage);
             this.FailOn(() => job.ability == null);
 
             Toil chargeUp = Toils_General.Wait(stageSettings?.chargeUpTicks ?? 0, TargetIndex.A);
@@ -31,10 +32,15 @@ namespace SingularityFramework.Sequences
             performStage.defaultCompleteMode = ToilCompleteMode.Instant;
             performStage.initAction = () =>
             {
-                foreach (CompAbilityEffect effectComp in job.ability.EffectComps)
+                Ability chargedAbility = job.ability;
+                LocalTargetInfo chargedTarget = job.targetA;
+
+                EndJobWith(JobCondition.Succeeded);
+
+                foreach (CompAbilityEffect effectComp in chargedAbility.EffectComps)
                 {
                     if (!(effectComp is IChainStageAction stageAction) || !stageAction.ActsOnStage(stage)) continue;
-                    stageAction.PerformStageAction(job.targetA);
+                    stageAction.PerformStageAction(chargedTarget);
                     return;
                 }
             };
