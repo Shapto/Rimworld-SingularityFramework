@@ -5,12 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Verse;
+using Verse.AI;
 
 namespace SingularityFramework.Sequences
 {
     public class CompProperties_AbilityChain : CompProperties_AbilityEffect
     {
         public int stageCount = 3;
+
+        /// <summary>
+        /// Per-stage settings, by stage index (the first stage is 0). Can be shorter than stageCount; later stages get none.
+        /// </summary>
+        public List<ChainStageSettings> stageSettings;
+
+        /// <summary>
+        /// The job used for charge-ups (Sing_ChargeUp).
+        /// </summary>
+        public JobDef chargeUpJob;
 
         /// <summary>
         /// How long the player has to use the next stage before the chain resets. 300 ticks is 5 seconds.
@@ -37,6 +48,11 @@ namespace SingularityFramework.Sequences
         private int stageCastThisTick;
         private int lastCastTick = -1;
 
+        /// <summary>
+        /// The settings for a stage, or null if it has none.
+        /// </summary>
+        public ChainStageSettings SettingsForStage(int stage) => Props.stageSettings != null && stage >= 0 && stage < Props.stageSettings.Count ? Props.stageSettings[stage] : null;
+
         public new CompProperties_AbilityChain Props => (CompProperties_AbilityChain)props;
 
         /// <summary>
@@ -61,6 +77,20 @@ namespace SingularityFramework.Sequences
 
         public bool IsFinalStageBeingCast => StageBeingCast == Props.stageCount - 1;
 
+        /// <summary>
+        /// Starts a charge-up for this stage if it has one. Returns true if it did, so the caller waits instead of acting now.
+        /// </summary>
+        public bool TryStartChargeUp(LocalTargetInfo target, int stage)
+        {
+            ChainStageSettings settings = SettingsForStage(stage);
+            if (settings == null || settings.chargeUpTicks <= 0 || Props.chargeUpJob == null) return false;
+
+            Job chargeUpJob = JobMaker.MakeJob(Props.chargeUpJob, target);
+            chargeUpJob.ability = parent;
+            chargeUpJob.count = stage;
+            parent.pawn.jobs.StartJob(chargeUpJob, JobCondition.InterruptForced);
+            return true;
+        }
 
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {

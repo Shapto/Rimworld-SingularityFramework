@@ -36,13 +36,26 @@ namespace SingularityFramework.Sequences
             return JumpUtility.ValidJumpTarget(parent.pawn, parent.pawn.Map, target.Cell);
         }
 
+        private CompAbilityEffect_Chain Chain => parent.CompOfType<CompAbilityEffect_Chain>();
+
+        /// <summary>
+        /// Jumps only on a chain's final stage (or always, outside a chain).
+        /// </summary>
+        public bool ActsOnStage(int stage) => Chain == null || stage == Chain.Props.stageCount - 1;
+
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             base.Apply(target, dest);
 
-            CompAbilityEffect_Chain chain = parent.CompOfType<CompAbilityEffect_Chain>();
-            if (chain != null && !chain.IsFinalStageBeingCast) return;
+            int stage = Chain?.StageBeingCast ?? 0;
+            if (!ActsOnStage(stage)) return;
+            if (Chain != null && Chain.TryStartChargeUp(target, stage)) return;
 
+            PerformStageAction(target);
+        }
+
+        public void PerformStageAction(LocalTargetInfo target)
+        {
             Pawn caster = parent.pawn;
             Map map = caster.Map;
             if (map == null || Props.flyerDefinition == null) return;

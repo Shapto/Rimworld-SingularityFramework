@@ -82,9 +82,11 @@
     <Compile Include="Relics\GameComponent_RelicAptitude.cs" />
     <Compile Include="Relics\Gizmo_RelicAptitude.cs" />
     <Compile Include="Relics\RelicAptitude.cs" />
+    <Compile Include="Sequences\ChainStageSettings.cs" />
     <Compile Include="Sequences\CompAbilityEffect_JumpSlam.cs" />
     <Compile Include="Sequences\CompProperties_AbilityChain.cs" />
     <Compile Include="Sequences\CompProperties_AbilityLineDash.cs" />
+    <Compile Include="Sequences\JobDriver_ChargeUp.cs" />
     <Compile Include="Sequences\JobDriver_LineDash.cs" />
     <Compile Include="Sequences\Patch_Pawn_DrawPos.cs" />
     <Compile Include="Sequences\PawnFlyer_LandingSlam.cs" />

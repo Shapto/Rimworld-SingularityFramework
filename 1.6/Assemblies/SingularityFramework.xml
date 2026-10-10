@@ -293,6 +293,28 @@
             <returns>A string containing the pawn's current aptitude level and, if applicable, the requirements needed to reach
             the next aptitude tier. Returns an empty string if the pawn is null.</returns>
         </member>
+        <member name="T:SingularityFramework.Sequences.ChainStageSettings">
+            <summary>
+            Extra settings for one stage of a chained ability. Stages without an entry have none of these.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Sequences.ChainStageSettings.chargeUpTicks">
+            <summary>
+            How long the caster stands charging before this stage's action happens. 0 for no charge-up.
+            The caster can be hit while charging.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Sequences.ChainStageSettings.chargeUpSound">
+            <summary>
+            Played when the charge-up starts.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Sequences.IChainStageAction">
+            <summary>
+            A comp that does the action of some stages of a chained ability (a dash, a jump).
+            Lets a charge-up perform the right action once it finishes.
+            </summary>
+        </member>
         <member name="F:SingularityFramework.Sequences.CompProperties_AbilityJumpSlam.flyerDefinition">
             <summary>
             The flyer ThingDef, with thingClass PawnFlyer_LandingSlam and a ModExtension_LandingSlam.
@@ -302,6 +324,21 @@
             <summary>
             Jumps the caster to the target cell and slams on landing.
             In a chained ability, only acts on the final stage.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Sequences.CompAbilityEffect_JumpSlam.ActsOnStage(System.Int32)">
+            <summary>
+            Jumps only on a chain's final stage (or always, outside a chain).
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Sequences.CompProperties_AbilityChain.stageSettings">
+            <summary>
+            Per-stage settings, by stage index (the first stage is 0). Can be shorter than stageCount; later stages get none.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Sequences.CompProperties_AbilityChain.chargeUpJob">
+            <summary>
+            The job used for charge-ups (Sing_ChargeUp).
             </summary>
         </member>
         <member name="F:SingularityFramework.Sequences.CompProperties_AbilityChain.stageWindowTicks">
@@ -320,6 +357,11 @@
             The chain resets if the next stage isn't used in time, and goes on cooldown after the final stage.
             </summary>
         </member>
+        <member name="M:SingularityFramework.Sequences.CompAbilityEffect_Chain.SettingsForStage(System.Int32)">
+            <summary>
+            The settings for a stage, or null if it has none.
+            </summary>
+        </member>
         <member name="P:SingularityFramework.Sequences.CompAbilityEffect_Chain.CurrentStage">
             <summary>
             The stage the next cast will perform, from 0. Falls back to 0 once the window has run out.
@@ -331,6 +373,11 @@
             so it gives the same answer whether they run before or after the chain advances.
             </summary>
         </member>
+        <member name="M:SingularityFramework.Sequences.CompAbilityEffect_Chain.TryStartChargeUp(Verse.LocalTargetInfo,System.Int32)">
+            <summary>
+            Starts a charge-up for this stage if it has one. Returns true if it did, so the caller waits instead of acting now.
+            </summary>
+        </member>
         <member name="F:SingularityFramework.Sequences.CompProperties_AbilityLineDash.cellsPerTick">
             <summary>
             Dash speed in cells per tick. 0.5 crosses 10 cells in 20 ticks (a third of a second).
@@ -340,6 +387,17 @@
             <summary>
             Dashes the caster in a straight line to the target cell, damaging what's on the way.
             In a chained ability, does nothing on the final stage, so the finisher can take over.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Sequences.CompAbilityEffect_LineDash.ActsOnStage(System.Int32)">
+            <summary>
+            Dashes on every stage except a chain's final one, which belongs to the finisher.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Sequences.JobDriver_ChargeUp">
+            <summary>
+            The caster stands facing the target for the stage's charge-up time, then performs that stage's action.
+            The stage number travels in job.count.
             </summary>
         </member>
         <member name="T:SingularityFramework.Sequences.JobDriver_LineDash">

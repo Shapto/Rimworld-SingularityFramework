@@ -6,4 +6,10 @@
   <reportString>dashing.</reportString>
   <casualInterruptible>false</casualInterruptible>
 </JobDef>
+<JobDef>
+  <defName>Sing_ChargeUp</defName>
+  <driverClass>SingularityFramework.Sequences.JobDriver_ChargeUp</driverClass>
+  <reportString>charging up.</reportString>
+  <casualInterruptible>false</casualInterruptible>
+</JobDef>
 </Defs>

@@ -28,17 +28,30 @@ namespace SingularityFramework.Sequences
     /// Dashes the caster in a straight line to the target cell, damaging what's on the way.
     /// In a chained ability, does nothing on the final stage, so the finisher can take over.
     /// </summary>
-    public class CompAbilityEffect_LineDash : CompAbilityEffect
+    public class CompAbilityEffect_LineDash : CompAbilityEffect, IChainStageAction
     {
         public new CompProperties_AbilityLineDash Props => (CompProperties_AbilityLineDash)props;
+
+        private CompAbilityEffect_Chain Chain => parent.CompOfType<CompAbilityEffect_Chain>();
+
+        /// <summary>
+        /// Dashes on every stage except a chain's final one, which belongs to the finisher.
+        /// </summary>
+        public bool ActsOnStage(int stage) => Chain == null || stage != Chain.Props.stageCount - 1;
 
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             base.Apply(target, dest);
 
-            CompAbilityEffect_Chain chain = parent.CompOfType<CompAbilityEffect_Chain>();
-            if (chain != null && chain.IsFinalStageBeingCast) return;
+            int stage = Chain?.StageBeingCast ?? 0;
+            if (!ActsOnStage(stage)) return;
+            if (Chain != null && Chain.TryStartChargeUp(target, stage)) return;
 
+            PerformStageAction(target);
+        }
+
+        public void PerformStageAction(LocalTargetInfo target)
+        {
             Pawn caster = parent.pawn;
             Job dashJob = JobMaker.MakeJob(Props.dashJob, target.Cell);
             dashJob.ability = parent;
