@@ -211,6 +211,11 @@
             Given to an unworthy pawn when the relic rejects them. Both optional.
             </summary>
         </member>
+        <member name="F:SingularityFramework.Relics.CompProperties_RelicAptitude.showAptitudeGizmo">
+            <summary>
+            When false, the framework's own aptitude box isn't shown, for weapons that show aptitude in their own status gizmo.
+            </summary>
+        </member>
         <member name="T:SingularityFramework.Relics.CompRelicAptitude">
             <summary>
             Makes a weapon a relic: each pawn has an aptitude for it (from a hidden roll, guaranteed traits or genes, or skills), revealed the first time they try it.

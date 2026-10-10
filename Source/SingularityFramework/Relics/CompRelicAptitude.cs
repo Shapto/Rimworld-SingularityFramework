@@ -81,6 +81,11 @@ namespace SingularityFramework.Relics
 
         public CompProperties_RelicAptitude() => compClass = typeof(CompRelicAptitude);
 
+        /// <summary>
+        /// When false, the framework's own aptitude box isn't shown, for weapons that show aptitude in their own status gizmo.
+        /// </summary>
+        public bool showAptitudeGizmo = true;
+
         public string RelicKey(ThingDef parentDefinition) => relicKey.NullOrEmpty() ? parentDefinition.defName : relicKey;
     }
 
@@ -185,6 +190,7 @@ namespace SingularityFramework.Relics
         /// </summary>
         public IEnumerable<Gizmo> GetEquippedGizmos(Pawn wielder)
         {
+            if (!Props.showAptitudeGizmo) yield break;
             yield return new Gizmo_RelicAptitude { aptitudeComp = this, wielder = wielder };
         }
 
