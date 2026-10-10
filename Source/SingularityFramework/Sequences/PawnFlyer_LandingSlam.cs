@@ -18,6 +18,7 @@ namespace SingularityFramework.Sequences
         public int damageAmount = 20;
         public float armorPenetration = -1f;
         public SoundDef explosionSound;
+        public bool hitsFriendlies = true;
     }
 
     /// <summary>
@@ -37,6 +38,15 @@ namespace SingularityFramework.Sequences
             ModExtension_LandingSlam slamSettings = def.GetModExtension<ModExtension_LandingSlam>();
             if (slamSettings?.damageDefinition == null || map == null) return;
 
+            var ignoredThings = new List<Thing> { landingPawn };
+            if (!slamSettings.hitsFriendlies && landingPawn != null)
+            {
+                foreach (Thing nearbyThing in GenRadial.RadialDistinctThingsAround(landingCell, map, slamSettings.radius, true))
+                {
+                    if (nearbyThing is Pawn nearbyPawn && !nearbyPawn.HostileTo(landingPawn)) ignoredThings.Add(nearbyPawn);
+                }
+            }
+
             GenExplosion.DoExplosion(
                 center: landingCell,
                 map: map,
@@ -47,7 +57,7 @@ namespace SingularityFramework.Sequences
                 armorPenetration: slamSettings.armorPenetration,
                 explosionSound: slamSettings.explosionSound,
                 weapon: landingPawn?.equipment?.Primary?.def,
-                ignoredThings: new List<Thing> { landingPawn });
+                ignoredThings: ignoredThings);
         }
     }
 }

@@ -23,6 +23,7 @@ namespace SingularityFramework.Geometry
         public int maximumWallsPierced;
         public bool destroysPiercedWalls;
         public bool piercesNaturalRock = true;
+        public bool hitsFriendlies = true;
     }
 
     /// <summary>
@@ -107,8 +108,8 @@ namespace SingularityFramework.Geometry
         public bool HitCell(IntVec3 cell, LocalTargetInfo mainTarget)
         {
             Map map = attacker.Map;
-            if (map == null || settings.damageDefinition == null) return false;
-
+            if (map == null) return false;
+            bool dealsDamage = settings.damageDefinition != null;
             float hitAngle = (cell - attacker.Position).AngleFlat;
             ThingDef weaponDefinition = attacker.equipment?.Primary?.def;
 
@@ -119,7 +120,7 @@ namespace SingularityFramework.Geometry
                 wallsPierced++;
 
                 if (settings.destroysPiercedWalls) blocker.Destroy(DestroyMode.KillFinalize);
-                else blocker.TakeDamage(new DamageInfo(settings.damageDefinition, currentDamage, settings.armorPenetration, hitAngle, attacker, null, weaponDefinition));
+                else if (dealsDamage) blocker.TakeDamage(new DamageInfo(settings.damageDefinition, currentDamage, settings.armorPenetration, hitAngle, attacker, null, weaponDefinition));
 
                 impactPoints.Add(cell.ToVector3Shifted());
                 currentDamage *= settings.damageFalloffPerHit;
@@ -127,10 +128,13 @@ namespace SingularityFramework.Geometry
                 if (!blocker.Destroyed) return false;
             }
 
+            if (!dealsDamage) return true;
+
             foreach (Thing thing in cell.GetThingList(map).ToList())
             {
                 if (!(thing is Pawn hitPawn) || hitPawn == attacker || hitPawn.Dead) continue;
                 if (hitPawn.Downed && !settings.hitsDownedPawns && hitPawn != mainTarget.Thing) continue;
+                if (!settings.hitsFriendlies && !hitPawn.HostileTo(attacker) && hitPawn != mainTarget.Thing) continue;
                 if (!alreadyHit.Add(hitPawn)) continue;
 
                 var damageInfo = new DamageInfo(settings.damageDefinition, currentDamage, settings.armorPenetration, hitAngle, attacker, null, weaponDefinition);

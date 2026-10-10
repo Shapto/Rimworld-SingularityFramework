@@ -41,7 +41,7 @@ namespace SingularityFramework.Sequences
             base.Apply(target, dest);
 
             CompAbilityEffect_Chain chain = parent.CompOfType<CompAbilityEffect_Chain>();
-            if (chain != null && !chain.IsFinalStage) return;
+            if (chain != null && !chain.IsFinalStageBeingCast) return;
 
             Pawn caster = parent.pawn;
             Map map = caster.Map;

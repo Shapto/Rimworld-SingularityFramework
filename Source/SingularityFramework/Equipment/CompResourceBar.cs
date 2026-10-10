@@ -27,7 +27,10 @@ namespace SingularityFramework.Equipment
     /// </summary>
     public class CompResourceBar : ThingComp, IEquippedGizmoProvider
     {
-        private Texture2D cachedBarTexture;
+        /// <summary>
+        /// One texture per bar color, shared by every resource bar, instead of one per weapon.
+        /// </summary>
+        private static readonly Dictionary<Color, Texture2D> barTexturesByColor = new Dictionary<Color, Texture2D>();
 
         public CompProperties_ResourceBar Props => (CompProperties_ResourceBar)props;
 
@@ -40,8 +43,12 @@ namespace SingularityFramework.Equipment
         {
             get
             {
-                if (cachedBarTexture == null) cachedBarTexture = SolidColorMaterials.NewSolidColorTexture(Props.barColor);
-                return cachedBarTexture;
+                if (!barTexturesByColor.TryGetValue(Props.barColor, out Texture2D barTexture))
+                {
+                    barTexture = SolidColorMaterials.NewSolidColorTexture(Props.barColor);
+                    barTexturesByColor[Props.barColor] = barTexture;
+                }
+                return barTexture;
             }
         }
 

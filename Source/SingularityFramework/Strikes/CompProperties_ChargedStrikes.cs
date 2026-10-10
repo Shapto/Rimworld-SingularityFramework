@@ -13,6 +13,12 @@ namespace SingularityFramework.Strikes
         public int chargesSpentPerAttack = 1;
 
         /// <summary>
+        /// When true, a charged attack that misses still spends its charges (a round fires either way).
+        /// When false, charges are only spent when the attack lands (stored energy released on contact).
+        /// </summary>
+        public bool spendChargesOnMiss = true;
+
+        /// <summary>
         /// Damage multiplier when the attack had charge to spend, and when the weapon was empty.
         /// </summary>
         public float damageFactorWhenCharged = 1f;
@@ -44,11 +50,6 @@ namespace SingularityFramework.Strikes
             if (reloadableComp == null) return false;
 
             chargedThisStrike = reloadableComp.RemainingCharges >= Props.chargesSpentPerAttack;
-            if (chargedThisStrike)
-            {
-                reloadableComp.RemainingCharges -= Props.chargesSpentPerAttack;
-                reloadableComp.UsedOnce();
-            }
             return true;
         }
 
@@ -60,9 +61,27 @@ namespace SingularityFramework.Strikes
 
         public void Notify_StrikeLanded(Pawn attacker, Thing target)
         {
-            if (chargedThisStrike) OnHitEffect.TryApplyAll(Props.onHitEffectsWhenCharged, attacker, target);
+            if (chargedThisStrike)
+            {
+                SpendCharges();
+                OnHitEffect.TryApplyAll(Props.onHitEffectsWhenCharged, attacker, target);
+            }
         }
 
-        public void Notify_StrikeMissed(Pawn attacker) { }
+        public void Notify_StrikeMissed(Pawn attacker)
+        {
+            if (chargedThisStrike && Props.spendChargesOnMiss) SpendCharges();
+        }
+
+        /// <summary>
+        /// Takes this attack's charges from the weapon's reloadable comp.
+        /// </summary>
+        private void SpendCharges()
+        {
+            CompEquippableAbilityReloadable reloadableComp = parent.TryGetComp<CompEquippableAbilityReloadable>();
+            if (reloadableComp == null) return;
+            reloadableComp.RemainingCharges -= Props.chargesSpentPerAttack;
+            reloadableComp.UsedOnce();
+        }
     }
 }

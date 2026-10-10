@@ -152,6 +152,35 @@ namespace SingularityFramework.Relics
         }
 
         /// <summary>
+        /// Adds a line to a stat's breakdown on the info card when the wielder's aptitude changes it,
+        /// e.g. "Partial aptitude: x80%".
+        /// </summary>
+        public override void GetStatsExplanation(StatDef stat, StringBuilder stringBuilder, string whitespace = "")
+        {
+            Pawn wielder = Wielder;
+            if (wielder == null) return;
+
+            AptitudeLevel aptitude = RelicAptitude.GetAptitude(wielder, Props, parent.def);
+            if (aptitude == AptitudeLevel.Full) return;
+
+            string tierLabel = RelicAptitude.Label(aptitude).CapitalizeFirst();
+
+            List<StatModifier> statFactors = StatListForWielder(Props.partialStatFactors, Props.unworthyStatFactors);
+            if (!statFactors.NullOrEmpty())
+            {
+                float factor = statFactors.GetStatFactorFromList(stat);
+                if (factor != 1f) stringBuilder.AppendLine($"{whitespace}{tierLabel}: x{factor.ToStringPercent()}");
+            }
+
+            List<StatModifier> statOffsets = StatListForWielder(Props.partialStatOffsets, Props.unworthyStatOffsets);
+            if (!statOffsets.NullOrEmpty())
+            {
+                float offset = statOffsets.GetStatOffsetFromList(stat);
+                if (offset != 0f) stringBuilder.AppendLine($"{whitespace}{tierLabel}: {stat.ValueToString(offset, ToStringNumberSense.Offset)}");
+            }
+        }
+
+        /// <summary>
         /// The aptitude status box, shown while a pawn holds the relic.
         /// </summary>
         public IEnumerable<Gizmo> GetEquippedGizmos(Pawn wielder)

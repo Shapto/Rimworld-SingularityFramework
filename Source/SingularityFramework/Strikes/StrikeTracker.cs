@@ -22,6 +22,11 @@ namespace SingularityFramework.Strikes
             public Thing landedTarget;
         }
 
+        /// <summary>
+        /// Forgets every open strike, e.g. when a game is loaded. Strikes never outlive one attack, so nothing is lost.
+        /// </summary>
+        public static void ClearAll() => activeStrikes.Clear();
+
         private static readonly Dictionary<Pawn, ActiveStrike> activeStrikes = new Dictionary<Pawn, ActiveStrike>();
 
         /// <summary>

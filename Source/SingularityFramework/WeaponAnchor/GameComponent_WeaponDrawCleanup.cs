@@ -8,7 +8,7 @@ using Verse;
 namespace SingularityFramework.WeaponAnchor
 {
     /// <summary>
-    /// Keeps the weapon draw records from holding onto pawns that are gone.
+    /// Clears the framework's per-pawn caches when a game loads, and keeps the weapon draw records from holding onto pawns that are gone.
     /// </summary>
     public class GameComponent_WeaponDrawCleanup : GameComponent
     {
@@ -20,6 +20,7 @@ namespace SingularityFramework.WeaponAnchor
         {
             base.FinalizeInit();
             WeaponDrawRecord.ClearAll();
+            Strikes.StrikeTracker.ClearAll();
         }
 
         public override void GameComponentTick()

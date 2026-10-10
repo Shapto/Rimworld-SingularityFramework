@@ -34,6 +34,8 @@ namespace SingularityFramework.Sequences
         private int storedStage;
         private int chainExpiresAtTick = -1;
         private int cooldownEndsAtTick = -1;
+        private int stageCastThisTick;
+        private int lastCastTick = -1;
 
         public new CompProperties_AbilityChain Props => (CompProperties_AbilityChain)props;
 
@@ -44,10 +46,27 @@ namespace SingularityFramework.Sequences
 
         public bool IsFinalStage => CurrentStage == Props.stageCount - 1;
 
+        /// <summary>
+        /// The stage of the cast happening right now. Other comps on the same ability read this in their Apply,
+        /// so it gives the same answer whether they run before or after the chain advances.
+        /// </summary>
+        public int StageBeingCast
+        {
+            get
+            {
+                if (lastCastTick == Find.TickManager.TicksGame) return stageCastThisTick;
+                return CurrentStage;
+            }
+        }
+
+        public bool IsFinalStageBeingCast => StageBeingCast == Props.stageCount - 1;
+
+
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             base.Apply(target, dest);
-
+            stageCastThisTick = CurrentStage;
+            lastCastTick = Find.TickManager.TicksGame;
             if (IsFinalStage)
             {
                 storedStage = 0;

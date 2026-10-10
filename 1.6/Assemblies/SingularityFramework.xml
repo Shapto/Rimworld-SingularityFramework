@@ -27,6 +27,11 @@
             Needs a CompEquippableAbilityReloadable on the same weapon.
             </summary>
         </member>
+        <member name="F:SingularityFramework.Equipment.CompResourceBar.barTexturesByColor">
+            <summary>
+            One texture per bar color, shared by every resource bar, instead of one per weapon.
+            </summary>
+        </member>
         <member name="P:SingularityFramework.Equipment.CompResourceBar.BarTexture">
             <summary>
             Made on first draw, which is always on the main thread.
@@ -212,6 +217,12 @@
             Unworthy pawns can be rejected; pawns with partial or no aptitude can wield it with weaker stats.
             </summary>
         </member>
+        <member name="M:SingularityFramework.Relics.CompRelicAptitude.GetStatsExplanation(RimWorld.StatDef,System.Text.StringBuilder,System.String)">
+            <summary>
+            Adds a line to a stat's breakdown on the info card when the wielder's aptitude changes it,
+            e.g. "Partial aptitude: x80%".
+            </summary>
+        </member>
         <member name="M:SingularityFramework.Relics.CompRelicAptitude.GetEquippedGizmos(Verse.Pawn)">
             <summary>
             The aptitude status box, shown while a pawn holds the relic.
@@ -309,6 +320,12 @@
             The stage the next cast will perform, from 0. Falls back to 0 once the window has run out.
             </summary>
         </member>
+        <member name="P:SingularityFramework.Sequences.CompAbilityEffect_Chain.StageBeingCast">
+            <summary>
+            The stage of the cast happening right now. Other comps on the same ability read this in their Apply,
+            so it gives the same answer whether they run before or after the chain advances.
+            </summary>
+        </member>
         <member name="F:SingularityFramework.Sequences.CompProperties_AbilityLineDash.cellsPerTick">
             <summary>
             Dash speed in cells per tick. 0.5 crosses 10 cells in 20 ticks (a third of a second).
@@ -354,6 +371,12 @@
             On the final stage of a chained ability, falls back to vanilla targeting for the finisher.
             </summary>
         </member>
+        <member name="F:SingularityFramework.Strikes.CompProperties_ChargedStrikes.spendChargesOnMiss">
+            <summary>
+            When true, a charged attack that misses still spends its charges (a round fires either way).
+            When false, charges are only spent when the attack lands (stored energy released on contact).
+            </summary>
+        </member>
         <member name="F:SingularityFramework.Strikes.CompProperties_ChargedStrikes.damageFactorWhenCharged">
             <summary>
             Damage multiplier when the attack had charge to spend, and when the weapon was empty.
@@ -369,6 +392,11 @@
             Makes a weapon spend charges from its vanilla reloadable comp on every attack.
             Charged attacks can deal more damage and trigger on-hit effects; empty attacks can be weaker.
             Needs a CompEquippableAbilityReloadable on the same weapon.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Strikes.CompChargedStrikes.SpendCharges">
+            <summary>
+            Takes this attack's charges from the weapon's reloadable comp.
             </summary>
         </member>
         <member name="T:SingularityFramework.Strikes.IStrikeModifier">
@@ -447,10 +475,22 @@
             and learn whether it landed right after.
             </summary>
         </member>
+        <member name="M:SingularityFramework.Strikes.Patch_VerbMeleeAttack_TryCastShot.Finalizer(RimWorld.Verb_MeleeAttack,System.Boolean)">
+             <summary>
+             Ends the strike after the attack, even if the attack threw an error, so a crash can't leave
+             the strike open and boost every later damage the pawn deals.Finalizers run after every postfix,
+             so other mods' strikes have already ended and our on-hit effects aren't boosted by them.
+            </summary>
+        </member>
         <member name="T:SingularityFramework.Strikes.StrikeTracker">
             <summary>
             Remembers which strike modifiers joined each pawn's current attack, and whether that attack landed.
             Driven by the attack patches; modifiers never call this themselves.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Strikes.StrikeTracker.ClearAll">
+            <summary>
+            Forgets every open strike, e.g. when a game is loaded. Strikes never outlive one attack, so nothing is lost.
             </summary>
         </member>
         <member name="F:SingularityFramework.Strikes.StrikeTracker.candidateBuffer">
@@ -600,7 +640,7 @@
         </member>
         <member name="T:SingularityFramework.WeaponAnchor.GameComponent_WeaponDrawCleanup">
             <summary>
-            Keeps the weapon draw records from holding onto pawns that are gone.
+            Clears the framework's per-pawn caches when a game loads, and keeps the weapon draw records from holding onto pawns that are gone.
             </summary>
         </member>
         <member name="T:SingularityFramework.WeaponAnchor.Patch_AnimRenderer_Draw">
@@ -699,9 +739,11 @@
             The weapon's width and center line across one slice. False if the slice has no visible pixels.
             </summary>
         </member>
-        <member name="M:SingularityFramework.WeaponAnchor.WeaponShapeAnalyzer.ReadPixels(UnityEngine.Texture2D)">
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponShapeAnalyzer.ReadPixels(UnityEngine.Texture2D,System.Int32,System.Int32@,System.Int32@)">
             <summary>
             Textures on the graphics card can't be read directly, so this copies one into a readable form.
+            It's scaled down on the way so its longest side is at most "maximumSize" pixels; shape analysis
+            works in sprite units, so it doesn't need full resolution, and big textures would be slow to scan.
             </summary>
         </member>
         <member name="M:SingularityFramework.WeaponAnchor.WeaponShapeAnalyzer.LocalPosition(System.Int32,System.Int32,System.Int32)">

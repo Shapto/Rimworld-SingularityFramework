@@ -37,9 +37,7 @@ namespace SingularityFramework.WeaponAnchor
 
         private static BodyShape Analyze(Texture2D bodyTexture)
         {
-            Color[] pixels = WeaponShapeAnalyzer.ReadPixels(bodyTexture);
-            int textureWidth = bodyTexture.width;
-            int textureHeight = bodyTexture.height;
+            Color[] pixels = WeaponShapeAnalyzer.ReadPixels(bodyTexture, 256, out int textureWidth, out int textureHeight);
 
             // The visible extent of each row, and the body's lowest and highest rows.
             var rowMinimumX = new int[textureHeight];

@@ -27,6 +27,7 @@ namespace SingularityFramework.WeaponAnchor
         private const int SpineSampleCount = 16;
         private const float TaperWidthFactor = 0.6f;   // narrower than this times the typical width counts as the tapering point
         private const float MuzzleSlicePosition = 0.95f;   // where the barrel's width and center line are measured
+        private const int AnalysisMaximumSize = 512;   // textures are scaled down to at most this size before being scanned
 
         private static readonly Dictionary<ThingDef, WeaponShape> cachedShapes = new Dictionary<ThingDef, WeaponShape>();
 
@@ -47,9 +48,7 @@ namespace SingularityFramework.WeaponAnchor
             Texture2D texture = weaponDef.graphic?.MatSingle?.mainTexture as Texture2D;
             if (texture == null) return shape;
 
-            Color[] pixels = ReadPixels(texture);
-            int textureWidth = texture.width;
-            int textureHeight = texture.height;
+            Color[] pixels = ReadPixels(texture, AnalysisMaximumSize, out int textureWidth, out int textureHeight);
 
             // Forward: exact for guns (their angle offset aims the barrel), read from the pixels for melee weapons.
             Vector2 forward;
@@ -262,16 +261,22 @@ namespace SingularityFramework.WeaponAnchor
 
         /// <summary>
         /// Textures on the graphics card can't be read directly, so this copies one into a readable form.
+        /// It's scaled down on the way so its longest side is at most "maximumSize" pixels; shape analysis
+        /// works in sprite units, so it doesn't need full resolution, and big textures would be slow to scan.
         /// </summary>
-        internal static Color[] ReadPixels(Texture2D source)
+        internal static Color[] ReadPixels(Texture2D source, int maximumSize, out int readWidth, out int readHeight)
         {
-            RenderTexture temporaryTexture = RenderTexture.GetTemporary(source.width, source.height, 0, RenderTextureFormat.ARGB32);
+            float downscale = Mathf.Min(1f, maximumSize / (float)Mathf.Max(source.width, source.height));
+            readWidth = Mathf.Max(1, Mathf.RoundToInt(source.width * downscale));
+            readHeight = Mathf.Max(1, Mathf.RoundToInt(source.height * downscale));
+
+            RenderTexture temporaryTexture = RenderTexture.GetTemporary(readWidth, readHeight, 0, RenderTextureFormat.ARGB32);
             Graphics.Blit(source, temporaryTexture);
 
             RenderTexture previousActive = RenderTexture.active;
             RenderTexture.active = temporaryTexture;
-            var readableTexture = new Texture2D(source.width, source.height, TextureFormat.ARGB32, false);
-            readableTexture.ReadPixels(new Rect(0, 0, source.width, source.height), 0, 0);
+            var readableTexture = new Texture2D(readWidth, readHeight, TextureFormat.ARGB32, false);
+            readableTexture.ReadPixels(new Rect(0, 0, readWidth, readHeight), 0, 0);
             readableTexture.Apply();
             RenderTexture.active = previousActive;
             RenderTexture.ReleaseTemporary(temporaryTexture);
