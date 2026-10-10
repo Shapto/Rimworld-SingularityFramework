@@ -99,6 +99,7 @@
     <Compile Include="Strikes\Patch_Thing_TakeDamage.cs" />
     <Compile Include="Strikes\Patch_VerbMeleeAttack_TryCastShot.cs" />
     <Compile Include="Strikes\StrikeTracker.cs" />
+    <Compile Include="Visuals\Bladetrails.cs" />
     <Compile Include="Visuals\HediffCompProperties_Aura.cs" />
     <Compile Include="Visuals\WeaponEffects.cs" />
     <Compile Include="WeaponAnchor\BodyShapeAnalyzer.cs" />

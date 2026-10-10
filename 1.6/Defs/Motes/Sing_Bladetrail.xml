@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<ThingDef Name="Sing_BladetrailBase" Abstract="True">
+		<thingClass>SingularityFramework.Visuals.Mote_Bladetrail</thingClass>
+		<category>Mote</category>
+		<altitudeLayer>MoteOverhead</altitudeLayer>
+		<useHitPoints>false</useHitPoints>
+	</ThingDef>
+</Defs>

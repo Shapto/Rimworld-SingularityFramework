@@ -480,6 +480,73 @@
             Every comp on the attacker that could be a strike modifier: weapon comps, worn apparel comps and hediff comps.
             </summary>
         </member>
+        <member name="T:SingularityFramework.Visuals.ModExtension_Bladetrail">
+            <summary>
+            How a bladetrail looks over its life. Put on the mote's ThingDef as a mod extension.
+            Timing (fade in, solid, fade out) stays in the def's vanilla mote block.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Visuals.ModExtension_Bladetrail.rippleAmount">
+            <summary>
+            Size wobble (0.02 = plus or minus 2%) and how fast it waves. 0 for a crisp trail.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Visuals.ModExtension_Bladetrail.echoCount">
+            <summary>
+            Extra fainter copies drawn behind the trail, each a bit bigger and fainter than the last.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Visuals.ModExtension_Bladetrail.sweepDegrees">
+            <summary>
+            How many degrees the trail rotates through while it's visible, so one sprite reads as a swing. 0 for a static trail.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Visuals.ModExtension_Bladetrail.scaleJitterRange">
+            <summary>
+            Random size variation per trail, and the random spread added to its angle when spawned on a swing.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Visuals.Mote_Bladetrail">
+            <summary>
+            A slash-shaped mote that can ripple, echo, and sweep through an arc. Tint it with the def's graphicData color.
+            </summary>
+        </member>
+        <member name="P:SingularityFramework.Visuals.Mote_Bladetrail.CurrentDrawAngle">
+            <summary>
+            The angle to draw at this frame: sweeps from one end of the arc to the other while the trail fades in and stays solid,
+            then holds the end angle while it fades out. Mirrored trails sweep the other way.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Visuals.Bladetrails">
+            <summary>
+            Spawns bladetrails for swings, reloads and other weapon motions.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.Bladetrails.Spawn(Verse.ThingDef,Verse.Map,UnityEngine.Vector3,System.Single,System.Boolean)">
+            <summary>
+            Spawns one bladetrail at an exact position and angle.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.Bladetrails.SpawnSwing(Verse.Pawn,UnityEngine.Vector3,Verse.ThingDef)">
+            <summary>
+            One specific trail, three quarters of the way from the attacker to the target, angled along the swing.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.Bladetrails.SpawnSwing(Verse.Pawn,UnityEngine.Vector3,System.Collections.Generic.List{Verse.ThingDef})">
+            <summary>
+            A random trail from the list, three quarters of the way from the attacker to the target, angled along the swing.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.Bladetrails.SpawnAtWeapon(Verse.Pawn,Verse.ThingDef,System.Single)">
+            <summary>
+            A specific trail at a point on the held weapon, angled the way the weapon is drawn right now (reloads, revving).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.Bladetrails.SpawnAtWeapon(Verse.Pawn,System.Collections.Generic.List{Verse.ThingDef},System.Single)">
+            <summary>
+            A random trail from the list at a point on the held weapon, angled the way the weapon is drawn right now (reloads, revving).
+            </summary>
+        </member>
         <member name="F:SingularityFramework.Visuals.HediffCompProperties_Aura.onlyWhileDrafted">
             <summary>
             When true, the aura only shows while the pawn is drafted.
