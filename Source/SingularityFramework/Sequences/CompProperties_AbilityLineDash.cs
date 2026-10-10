@@ -19,6 +19,19 @@ namespace SingularityFramework.Sequences
         /// </summary>
         public float cellsPerTick = 0.5f;
 
+        /// <summary>
+        /// How the dash's speed changes over its length. 1 is constant speed; higher bursts out faster and eases into the landing
+        /// (3 starts at three times the average speed). The dash takes the same total time either way.
+        /// </summary>
+        public float easingPower = 3f;
+
+        /// <summary>
+        /// Left behind along the dash path (e.g. DustPuff). Empty for no trail.
+        /// </summary>
+        public FleckDef trailFleck;
+        public int trailFleckIntervalTicks = 2;
+        public FloatRange trailFleckScale = new FloatRange(0.8f, 1.4f);
+
         public JobDef dashJob;
 
         public CompProperties_AbilityLineDash() => compClass = typeof(CompAbilityEffect_LineDash);

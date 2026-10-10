@@ -1,4 +1,6 @@
-﻿using System;
+﻿using RimWorld;
+using SingularityFramework.Geometry;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +8,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using Verse.AI;
-using SingularityFramework.Geometry;
 
 namespace SingularityFramework.Sequences
 {
@@ -24,6 +25,8 @@ namespace SingularityFramework.Sequences
         private LineStrike lineStrike;
 
         private CompProperties_AbilityLineDash DashProps => job.ability?.CompOfType<CompAbilityEffect_LineDash>()?.Props;
+
+        private int ticksElapsed;
 
         /// <summary>
         /// Where the pawn should be drawn this frame
@@ -73,9 +76,13 @@ namespace SingularityFramework.Sequences
                 return;
             }
 
-            progress = Mathf.Min(1f, progress + dashProps.cellsPerTick / lineCells.Count);
-            int cellsReached = Mathf.Min(lineCells.Count, Mathf.FloorToInt(progress * lineCells.Count));
+            // Progress along the line follows an ease-out curve over a fixed duration: fast off the line, slowing into the landing.
+            float totalTicks = Mathf.Max(1f, lineCells.Count / Mathf.Max(0.01f, dashProps.cellsPerTick));
+            ticksElapsed++;
+            float timeFraction = Mathf.Clamp01(ticksElapsed / totalTicks);
+            progress = 1f - Mathf.Pow(1f - timeFraction, Mathf.Max(1f, dashProps.easingPower));
 
+            int cellsReached = Mathf.Min(lineCells.Count, Mathf.FloorToInt(progress * lineCells.Count));
             while (cellsEntered < cellsReached)
             {
                 IntVec3 nextCell = lineCells[cellsEntered];
@@ -91,7 +98,23 @@ namespace SingularityFramework.Sequences
                 cellsEntered++;
             }
 
-            if (progress >= 1f) EndJobWith(JobCondition.Succeeded);
+            SpawnTrailFleck(dashProps);
+
+            if (timeFraction >= 1f) EndJobWith(JobCondition.Succeeded);
+        }
+
+        /// <summary>
+        /// Leaves a puff behind the dashing pawn every few ticks, drifting off in a random direction.
+        /// </summary>
+        private void SpawnTrailFleck(CompProperties_AbilityLineDash dashProps)
+        {
+            if (dashProps.trailFleck == null || pawn.Map == null) return;
+            if (ticksElapsed % Mathf.Max(1, dashProps.trailFleckIntervalTicks) != 0) return;
+
+            FleckCreationData fleckData = FleckMaker.GetDataStatic(CurrentDrawPosition, pawn.Map, dashProps.trailFleck, dashProps.trailFleckScale.RandomInRange);
+            fleckData.velocityAngle = Rand.Range(0f, 360f);
+            fleckData.velocitySpeed = Rand.Range(0.2f, 0.6f);
+            pawn.Map.flecks.CreateFleck(fleckData);
         }
 
         public override void ExposeData()
@@ -100,6 +123,7 @@ namespace SingularityFramework.Sequences
             Scribe_Values.Look(ref startCell, "startCell");
             Scribe_Values.Look(ref progress, "progress");
             Scribe_Values.Look(ref cellsEntered, "cellsEntered");
+            Scribe_Values.Look(ref ticksElapsed, "ticksElapsed");
         }
     }
 }

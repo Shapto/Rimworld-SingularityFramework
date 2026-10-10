@@ -388,6 +388,17 @@
             Dash speed in cells per tick. 0.5 crosses 10 cells in 20 ticks (a third of a second).
             </summary>
         </member>
+        <member name="F:SingularityFramework.Sequences.CompProperties_AbilityLineDash.easingPower">
+            <summary>
+            How the dash's speed changes over its length. 1 is constant speed; higher bursts out faster and eases into the landing
+            (3 starts at three times the average speed). The dash takes the same total time either way.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Sequences.CompProperties_AbilityLineDash.trailFleck">
+            <summary>
+            Left behind along the dash path (e.g. DustPuff). Empty for no trail.
+            </summary>
+        </member>
         <member name="T:SingularityFramework.Sequences.CompAbilityEffect_LineDash">
             <summary>
             Dashes the caster in a straight line to the target cell, damaging what's on the way.
@@ -414,6 +425,11 @@
         <member name="P:SingularityFramework.Sequences.JobDriver_LineDash.CurrentDrawPosition">
             <summary>
             Where the pawn should be drawn this frame
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Sequences.JobDriver_LineDash.SpawnTrailFleck(SingularityFramework.Sequences.CompProperties_AbilityLineDash)">
+            <summary>
+            Leaves a puff behind the dashing pawn every few ticks, drifting off in a random direction.
             </summary>
         </member>
         <member name="T:SingularityFramework.Sequences.Patch_Pawn_DrawPos">
