@@ -11,7 +11,8 @@ namespace SingularityFramework.Equipment
 {
     /// <summary>
     /// Vanilla only takes the first equippable ability comp on a weapon. This adds the abilities of every other one,
-    /// so a weapon can grant several abilities by listing several comps.
+    /// so a weapon can grant several abilities by listing several comps. Only safe with one CompEquippableAbility per weapon:
+    /// several of them overwrite each other’s saved data. Use CompGrantAbilities instead.
     /// </summary>
     [HarmonyPatch(typeof(Pawn_AbilityTracker), nameof(Pawn_AbilityTracker.AllAbilitiesForReading), MethodType.Getter)]
     public static class Patch_PawnAbilityTracker_AllAbilitiesForReading

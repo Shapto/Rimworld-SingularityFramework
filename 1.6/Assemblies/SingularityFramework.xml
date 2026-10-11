@@ -16,6 +16,13 @@
             Draw time and sound come from the ability's verb (warmupTime, soundCast).
             </summary>
         </member>
+        <member name="T:SingularityFramework.Equipment.CompGrantAbilities">
+            <summary>
+            Gives the wielder any number of abilities while this weapon is equipped, and takes them away when it's unequipped.
+            The abilities live on the pawn, so each one saves correctly, unlike several CompEquippableAbility comps on one weapon,
+            which overwrite each other's saved data.
+            </summary>
+        </member>
         <member name="F:SingularityFramework.Equipment.CompProperties_ResourceBar.label">
             <summary>
             Shown above the bar. Leave empty to use the reloadable comp's charge noun (e.g. "burner charge").
@@ -56,7 +63,8 @@
         <member name="T:SingularityFramework.Equipment.Patch_PawnAbilityTracker_AllAbilitiesForReading">
             <summary>
             Vanilla only takes the first equippable ability comp on a weapon. This adds the abilities of every other one,
-            so a weapon can grant several abilities by listing several comps.
+            so a weapon can grant several abilities by listing several comps. Only safe with one CompEquippableAbility per weapon:
+            several of them overwrite each other’s saved data. Use CompGrantAbilities instead.
             </summary>
         </member>
         <member name="T:SingularityFramework.Geometry.LineStrikeSettings">

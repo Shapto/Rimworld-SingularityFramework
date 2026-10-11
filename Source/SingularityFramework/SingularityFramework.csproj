@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Equipment\CompAbilityEffect_SwitchWeapon.cs" />
+    <Compile Include="Equipment\CompGrantAbilities.cs" />
     <Compile Include="Equipment\CompResourceBar.cs" />
     <Compile Include="Equipment\IEquippedGizmoProvider.cs" />
     <Compile Include="Equipment\Patch_PawnEquipmentTracker_GetGizmos.cs" />
