@@ -47,7 +47,7 @@ namespace SingularityFramework.Relics
         /// <summary>
         /// A line like "Manipulation: 84% / 90%", colored by whether it's met.
         /// </summary>
-        public string Describe(Pawn pawn)
+        public virtual string Describe(Pawn pawn)
         {
             if (pawn == null) return string.Empty;
 

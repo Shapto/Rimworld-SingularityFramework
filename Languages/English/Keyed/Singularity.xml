@@ -9,4 +9,11 @@
   <Sing_AptitudeRequirementLine>{0}: {1} / {2}</Sing_AptitudeRequirementLine>
   <Sing_AptitudeCurrent>Aptitude: {0}</Sing_AptitudeCurrent>
   <Sing_AptitudeRevealedShort>{0}: {1}</Sing_AptitudeRevealedShort>
+  <Sing_AptitudeYes>Yes</Sing_AptitudeYes>
+  <Sing_AptitudeNo>No</Sing_AptitudeNo>
+  <Sing_AptitudePassionLabel>{0} passion</Sing_AptitudePassionLabel>
+  <Sing_AptitudePassionNone>None</Sing_AptitudePassionNone>
+  <Sing_AptitudePassionMinor>Interested</Sing_AptitudePassionMinor>
+  <Sing_AptitudePassionMajor>Burning</Sing_AptitudePassionMajor>
+  <Sing_AptitudeAnyOfOption>or {0}</Sing_AptitudeAnyOfOption>
 </LanguageData>

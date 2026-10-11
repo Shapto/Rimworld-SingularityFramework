@@ -144,6 +144,12 @@
             A line like "Manipulation: 84% / 90%", colored by whether it's met.
             </summary>
         </member>
+        <member name="T:SingularityFramework.Relics.AptitudeRequirement_AnyOf">
+            <summary>
+            Passes when the pawn meets at least one of its options, e.g. "Bloodlust or Brawler".
+            The label is a translation key so the group can have a name like "Battle freak".
+            </summary>
+        </member>
         <member name="T:SingularityFramework.Relics.AptitudeRequirement_Capacity">
             <summary>
             Represents an aptitude requirement based on a specific pawn capacity.
@@ -151,6 +157,11 @@
             <remarks>This class evaluates whether a pawn meets a requirement by checking the level of a specified
             capacity, such as movement or manipulation. It is typically used in scenarios where certain actions or roles
             require a minimum capacity level.</remarks>
+        </member>
+        <member name="T:SingularityFramework.Relics.AptitudeRequirement_Passion">
+            <summary>
+            Requires at least a given passion in one skill. Minimum 1 is a minor passion, 2 is a major passion.
+            </summary>
         </member>
         <member name="T:SingularityFramework.Relics.AptitudeRequirement_Skill">
             <summary>
@@ -160,6 +171,11 @@
         <member name="T:SingularityFramework.Relics.AptitudeRequirement_Stat">
             <summary>
             Represents an aptitude requirement based on a specific stat value for a pawn.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Relics.AptitudeRequirement_Trait">
+            <summary>
+            Requires the pawn to have a trait, at a specific degree for traits that have degrees.
             </summary>
         </member>
         <member name="T:SingularityFramework.Relics.CompAbilityEffect_RequiresAptitude">

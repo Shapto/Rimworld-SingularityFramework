@@ -36,7 +36,6 @@ namespace SingularityFramework.Equipment
             {
                 if (!(weaponComp is CompEquippableAbility abilityComp)) continue;
 
-                // Vanilla already added the first one.
                 if (isFirstAbilityComp)
                 {
                     isFirstAbilityComp = false;
