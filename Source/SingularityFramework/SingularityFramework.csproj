@@ -110,6 +110,7 @@
     <Compile Include="Visuals\WeaponEffects.cs" />
     <Compile Include="WeaponAnchor\BodyShapeAnalyzer.cs" />
     <Compile Include="WeaponAnchor\GameComponent_WeaponDrawCleanup.cs" />
+    <Compile Include="WeaponAnchor\ModExtension_WeaponAnchors.cs" />
     <Compile Include="WeaponAnchor\Patch_AnimRenderer_Draw.cs" />
     <Compile Include="WeaponAnchor\Patch_PawnRenderUtility_DrawEquipmentAiming.cs" />
     <Compile Include="SingularityMod.cs" />

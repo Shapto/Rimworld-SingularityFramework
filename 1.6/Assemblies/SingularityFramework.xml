@@ -750,6 +750,27 @@
             Throws a fleck at the weapon's muzzle.
             </summary>
         </member>
+        <member name="M:SingularityFramework.Visuals.WeaponEffects.TryGetSpritePointInWorld(Verse.Pawn,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector3@,UnityEngine.Vector3@)">
+            <summary>
+            The world position of a point on the held weapon's sprite, and the world direction of a sprite-space direction there.
+            Handles mirroring and animation mods through the weapon's draw record. False when the weapon wasn't drawn recently.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.WeaponEffects.AnchorGroupOf(Verse.Pawn,System.String,UnityEngine.Vector2@)">
+            <summary>
+            The held weapon's anchor group by name, or null if it has none (or isn't being drawn).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.WeaponEffects.TryGetAnchorInWorld(Verse.Pawn,System.String,System.Int32,UnityEngine.Vector3@,UnityEngine.Vector3@)">
+            <summary>
+            One anchor point of the held weapon in the world, with its outward direction. Use for exact spots like exhausts.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.WeaponEffects.TryGetRandomAnchorAlongLine(Verse.Pawn,System.String,UnityEngine.Vector3@,UnityEngine.Vector3@)">
+            <summary>
+            A random spot along an anchor group's line in the world, with its outward direction. Use for effects spread along a blade.
+            </summary>
+        </member>
         <member name="T:SingularityFramework.WeaponAnchor.BodyShapeAnalyzer">
             <summary>
             How wide a pawn's torso is in its body texture, and where the body starts and ends vertically.
@@ -759,6 +780,28 @@
         <member name="T:SingularityFramework.WeaponAnchor.GameComponent_WeaponDrawCleanup">
             <summary>
             Clears the framework's per-pawn caches when a game loads, and keeps the weapon draw records from holding onto pawns that are gone.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.WeaponAnchor.WeaponAnchorGroup">
+            <summary>
+            A named set of points on a weapon's texture, plus the direction effects leave them in.
+            Used either as separate points (a gunblade's exhausts) or as a line traced along the sprite (a burning blade's edge).
+            Points and direction are in image pixels as an image editor shows them: x to the right, y downward.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponAnchorGroup.SpritePoint(System.Int32,UnityEngine.Vector2)">
+            <summary>
+            A point converted to sprite units (-0.5 to 0.5, y up)
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponAnchorGroup.RandomSpritePointAlongLine(UnityEngine.Vector2)">
+            <summary>
+            A random point along the line through all the points, in sprite units. Longer segments get picked more often.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.WeaponAnchor.ModExtension_WeaponAnchors">
+            <summary>
+            Marks named points on a weapon's texture so effects can be spawned exactly there while it's held.
             </summary>
         </member>
         <member name="T:SingularityFramework.WeaponAnchor.Patch_AnimRenderer_Draw">

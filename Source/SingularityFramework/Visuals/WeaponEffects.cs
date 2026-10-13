@@ -82,5 +82,63 @@ namespace SingularityFramework.Visuals
             TryGetMuzzleInWorld(pawn, out Vector3 worldPosition);
             pawn.Map.flecks.CreateFleck(FleckMaker.GetDataStatic(worldPosition, pawn.Map, fleckDefinition, scale));
         }
+
+        /// <summary>
+        /// The world position of a point on the held weapon's sprite, and the world direction of a sprite-space direction there.
+        /// Handles mirroring and animation mods through the weapon's draw record. False when the weapon wasn't drawn recently.
+        /// </summary>
+        public static bool TryGetSpritePointInWorld(Pawn pawn, Vector2 spritePoint, Vector2 spriteDirection, out Vector3 worldPosition, out Vector3 worldDirection)
+        {
+            worldPosition = pawn.DrawPos;
+            worldDirection = Vector3.forward;
+            if (!WeaponDrawRecord.TryGetCurrent(pawn, out WeaponDrawRecord record) || record.weaponDef == null) return false;
+
+            worldPosition = record.SpritePointToWorld(spritePoint);
+            Vector3 aheadPosition = record.SpritePointToWorld(spritePoint + spriteDirection * 0.1f);
+            worldDirection = aheadPosition - worldPosition;
+            worldDirection.y = 0f;
+            worldDirection = worldDirection.normalized;
+            return true;
+        }
+
+        /// <summary>
+        /// The held weapon's anchor group by name, or null if it has none (or isn't being drawn).
+        /// </summary>
+        public static WeaponAnchorGroup AnchorGroupOf(Pawn pawn, string groupName, out Vector2 textureSize)
+        {
+            textureSize = Vector2.one;
+            if (!WeaponDrawRecord.TryGetCurrent(pawn, out WeaponDrawRecord record) || record.weaponDef == null) return null;
+
+            ModExtension_WeaponAnchors anchors = record.weaponDef.GetModExtension<ModExtension_WeaponAnchors>();
+            if (anchors == null) return null;
+            textureSize = anchors.textureSize;
+            return anchors.GroupNamed(groupName);
+        }
+
+        /// <summary>
+        /// One anchor point of the held weapon in the world, with its outward direction. Use for exact spots like exhausts.
+        /// </summary>
+        public static bool TryGetAnchorInWorld(Pawn pawn, string groupName, int pointIndex, out Vector3 worldPosition, out Vector3 worldDirection)
+        {
+            worldPosition = pawn.DrawPos;
+            worldDirection = Vector3.forward;
+            WeaponAnchorGroup anchorGroup = AnchorGroupOf(pawn, groupName, out Vector2 textureSize);
+            if (anchorGroup == null || pointIndex < 0 || pointIndex >= anchorGroup.PointCount) return false;
+
+            return TryGetSpritePointInWorld(pawn, anchorGroup.SpritePoint(pointIndex, textureSize), anchorGroup.SpriteDirection, out worldPosition, out worldDirection);
+        }
+
+        /// <summary>
+        /// A random spot along an anchor group's line in the world, with its outward direction. Use for effects spread along a blade.
+        /// </summary>
+        public static bool TryGetRandomAnchorAlongLine(Pawn pawn, string groupName, out Vector3 worldPosition, out Vector3 worldDirection)
+        {
+            worldPosition = pawn.DrawPos;
+            worldDirection = Vector3.forward;
+            WeaponAnchorGroup anchorGroup = AnchorGroupOf(pawn, groupName, out Vector2 textureSize);
+            if (anchorGroup == null || anchorGroup.PointCount == 0) return false;
+
+            return TryGetSpritePointInWorld(pawn, anchorGroup.RandomSpritePointAlongLine(textureSize), anchorGroup.SpriteDirection, out worldPosition, out worldDirection);
+        }
     }
 }
