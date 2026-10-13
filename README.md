@@ -12,6 +12,7 @@ A shared RimWorld mod framework for authoring combat, ability, and visual effect
 - visual effect helpers and aura components
 - weapon/body alignment for animated equipment rendering
 - geometric helpers for strike paths and line-based attacks
+- weapon anchor points for sprite and VFX placement on held equipment
 
 ## Mod purpose
 
@@ -86,6 +87,21 @@ Examples:
 - `Patch_PawnRenderUtility_DrawEquipmentAiming`
 
 This is useful for mods that add unusual weapon silhouettes or custom arm/weapon animation behaviors.
+
+### Weapon anchor points for effects
+
+The framework can also define named anchor groups directly on a weapon's sprite, with either single points or sampled lines that can be used to place visual effects in world space.
+
+Relevant code:
+
+- `ModExtension_WeaponAnchors`
+- `WeaponAnchorGroups`
+- `WeaponEffects.TryGetSpritePointInWorld`
+- `WeaponEffects.AnchorGroupOf`
+- `WeaponEffects.TryGetAnchorInWorld`
+- `WeaponEffects.TryGetRandomAnchorAlongLine`
+
+This supports effects such as exhaust plumes, burning edges, muzzle flashes, and other sprite-based VFX that need to attach to a held weapon while respecting mirroring, animation, and movement transforms.
 
 ### Visual effects
 
