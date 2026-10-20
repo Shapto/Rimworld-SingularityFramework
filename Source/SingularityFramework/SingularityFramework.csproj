@@ -72,6 +72,7 @@
     <Compile Include="Equipment\CompResourceBar.cs" />
     <Compile Include="Equipment\IEquippedGizmoProvider.cs" />
     <Compile Include="Equipment\Patch_PawnEquipmentTracker_GetGizmos.cs" />
+    <Compile Include="Equipment\RelicTransfer.cs" />
     <Compile Include="Geometry\LineStrike.cs" />
     <Compile Include="Equipment\Patch_PawnAbilityTracker_AllAbilitiesForReading.cs" />
     <Compile Include="Relics\AptitudeRequirement.cs" />

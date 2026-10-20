@@ -53,6 +53,7 @@ namespace SingularityFramework.Equipment
 
             var newForm = (ThingWithComps)ThingMaker.MakeThing(Props.switchTo, oldForm.Stuff);
             CopyStateTo(oldForm, newForm);
+            RelicTransfer.Transfer(oldForm, newForm);
 
             caster.equipment.Remove(oldForm);
             oldForm.Destroy();

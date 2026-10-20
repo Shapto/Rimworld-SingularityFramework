@@ -60,6 +60,18 @@
             Adds resource bar gizmos for the wielder's weapon. Vanilla only asks one comp for equipment gizmos.
             </summary>
         </member>
+        <member name="T:SingularityFramework.Equipment.RelicTransfer">
+            <summary>
+            Moves an ideology relic's identity from one weapon form to the next,
+            so switching forms is not treated as losing or destroying the relic.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Equipment.RelicTransfer.Transfer(Verse.ThingWithComps,Verse.ThingWithComps)">
+            <summary>
+            Detaches the relic precept from the old form and attaches it to the new form.
+            Must be called before the old form is destroyed.
+            </summary>
+        </member>
         <member name="T:SingularityFramework.Equipment.Patch_PawnAbilityTracker_AllAbilitiesForReading">
             <summary>
             Vanilla only takes the first equippable ability comp on a weapon. This adds the abilities of every other one,
