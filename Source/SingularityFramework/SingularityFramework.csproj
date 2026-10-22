@@ -79,9 +79,13 @@
     <Compile Include="Kitbash\ColorSampling.cs" />
     <Compile Include="Kitbash\ConvexPolygon.cs" />
     <Compile Include="Kitbash\KitbashAssembly.cs" />
+    <Compile Include="Kitbash\KitbashBuilds.cs" />
     <Compile Include="Kitbash\KitbashCanvas.cs" />
+    <Compile Include="Kitbash\KitbashGraphic.cs" />
     <Compile Include="Kitbash\KitbashPiece.cs" />
+    <Compile Include="Kitbash\KitbashPieceSetDef.cs" />
     <Compile Include="Kitbash\KitbashRandom.cs" />
+    <Compile Include="Kitbash\KitbashTextures.cs" />
     <Compile Include="Kitbash\PixelMask.cs" />
     <Compile Include="Kitbash\PointSpread.cs" />
     <Compile Include="Kitbash\SurfaceSpace.cs" />

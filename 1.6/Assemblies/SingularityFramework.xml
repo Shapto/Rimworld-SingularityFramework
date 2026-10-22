@@ -344,6 +344,28 @@
             stand on. How the top ends is rolled per shape: several points, a pair, or one tall point.
             </summary>
         </member>
+        <member name="T:SingularityFramework.Kitbash.KitbashBuilds">
+            <summary>
+            Runs kitbash builds off the main thread, so building a mask or a replica doesn't stall the game. The engine itself
+            only does maths on arrays, so it's safe to run on any thread; reading textures before and making textures after must
+            happen on the main thread, so the result is handed back there.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashBuilds.Start``1(System.Func{``0},System.Action{``0},System.String)">
+            <summary>
+            Runs "build" on a background thread, then "whenDone" with its result on the main thread (on a later frame).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashBuilds.DeliverFinished">
+            <summary>
+            Hands every finished build back to the game. Called every frame on the main thread.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.GameComponent_KitbashBuilds">
+            <summary>
+            Delivers finished kitbash builds every frame while a game is running.
+            </summary>
+        </member>
         <member name="T:SingularityFramework.Kitbash.KitbashCanvas">
             <summary>
             The picture being built: pieces are drawn onto it one by one, then it's cleaned up (hard edges, seams closed).
@@ -398,6 +420,31 @@
             Draws another canvas on top of this one, shifted by an offset.
             </summary>
         </member>
+        <member name="T:SingularityFramework.Kitbash.KitbashGraphic">
+            <summary>
+            A four-facing graphic made from generated textures instead of files, so it can be handed to anything that draws a
+            Graphic_Multi (render nodes, weapon drawing).
+            The west texture is stored mirrored and the graphic marked as west-flipped: humanlike meshes draw west flipped, so
+            the flip undoes the mirror and the real west view shows. (Kitbashed results aren't symmetric, so west can't just be
+            east flipped like vanilla does.)
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashGraphic.Create(SingularityFramework.Kitbash.KitbashCanvas[],System.String,UnityEngine.Shader,UnityEngine.Vector2)">
+            <summary>
+            "canvasesByRotation": the picture for each facing, indexed by Rot4.AsInt (north, east, south, west), each as
+            seen from that facing. Main thread only.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashGraphic.Destroy">
+            <summary>
+            Frees the generated textures and materials (when the pawn or weapon this was made for is gone).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashGraphic.SingleMaterial(SingularityFramework.Kitbash.KitbashCanvas,System.String,UnityEngine.Shader,UnityEngine.Texture2D@)">
+            <summary>
+            A single generated texture as a material (for things drawn with one facing, like a weapon overlay).
+            </summary>
+        </member>
         <member name="T:SingularityFramework.Kitbash.KitbashSize">
             <summary>
             How big a piece is meant to be used: big pieces outline and fill first, medium and small fill what's left.
@@ -441,6 +488,22 @@
             The piece's colour at a point in its own pixels, blended between the four nearest pixels.
             </summary>
         </member>
+        <member name="T:SingularityFramework.Kitbash.KitbashPieceEntry">
+            <summary>
+            One piece texture in a set: where it is, how big a piece it's meant to be, and whether it can stand up as a point.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.KitbashPieceSetDef">
+            <summary>
+            The pieces an artist made for kitbashing (for example the hardblood crystals). Their pixels are read the first time
+            they're needed, which must be on the main thread.
+            </summary>
+        </member>
+        <member name="P:SingularityFramework.Kitbash.KitbashPieceSetDef.Pieces">
+            <summary>
+            The pieces, read from their textures on first use (main thread only).
+            </summary>
+        </member>
         <member name="T:SingularityFramework.Kitbash.KitbashRandom">
             <summary>
             The dice for one build. Seeded, so the same pawn or weapon always gets the same result, and kept separate from
@@ -455,6 +518,28 @@
         <member name="M:SingularityFramework.Kitbash.KitbashRandom.RangeInclusive(System.Int32,System.Int32)">
             <summary>
             A whole number from minimum to maximum, both included.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.KitbashTextures">
+            <summary>
+            Moving pictures between the game's textures and the kitbash engine. Must run on the main thread.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashTextures.ReadPixels(UnityEngine.Texture,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            A texture's pixels at the given size (scaled up or down on the way), row 0 at the top as the engine expects.
+            Textures on the graphics card can't be read directly, so it's drawn into a temporary readable copy first.
+            "mirrored" flips it left to right (west views are the east textures flipped).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashTextures.ReadSilhouette(UnityEngine.Texture,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Where a texture shows anything, at the given size (a silhouette for the engine to build on).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashTextures.ToTexture(SingularityFramework.Kitbash.KitbashCanvas,System.String,System.Boolean)">
+            <summary>
+            A finished canvas as a texture the game can draw. "mirrored" flips it left to right.
             </summary>
         </member>
         <member name="T:SingularityFramework.Kitbash.PixelMask">
