@@ -459,9 +459,10 @@
             Frees the generated textures and materials (when the pawn or weapon this was made for is gone).
             </summary>
         </member>
-        <member name="M:SingularityFramework.Kitbash.KitbashGraphic.SingleMaterial(SingularityFramework.Kitbash.KitbashCanvas,System.String,UnityEngine.Shader,UnityEngine.Texture2D@)">
+        <member name="M:SingularityFramework.Kitbash.KitbashGraphic.SingleMaterial(SingularityFramework.Kitbash.KitbashCanvas,System.String,UnityEngine.Shader,UnityEngine.Texture2D@,System.Int32)">
             <summary>
             A single generated texture as a material (for things drawn with one facing, like a weapon overlay).
+            "growthTicks": if above 0 (and the canvas recorded growth), it grows into place over that many ticks.
             </summary>
         </member>
         <member name="T:SingularityFramework.Kitbash.KitbashGrowth">

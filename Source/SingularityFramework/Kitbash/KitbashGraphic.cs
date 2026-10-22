@@ -75,10 +75,13 @@ namespace SingularityFramework.Kitbash
 
         /// <summary>
         /// A single generated texture as a material (for things drawn with one facing, like a weapon overlay).
+        /// "growthTicks": if above 0 (and the canvas recorded growth), it grows into place over that many ticks.
         /// </summary>
-        public static Material SingleMaterial(KitbashCanvas canvas, string name, Shader shader, out Texture2D texture)
+        public static Material SingleMaterial(KitbashCanvas canvas, string name, Shader shader, out Texture2D texture, int growthTicks = 0)
         {
-            texture = KitbashTextures.ToTexture(canvas, name, false);
+            bool grows = growthTicks > 0 && canvas.arrival != null;
+            texture = KitbashTextures.ToTexture(canvas, name, false, grows);
+            if (grows) KitbashGrowth.Start(new[] { texture }, new[] { canvas }, growthTicks);
             return new Material(shader)
             {
                 name = name,
