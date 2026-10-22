@@ -1386,6 +1386,93 @@
             A random trail from the list at a point on the held weapon, angled the way the weapon is drawn right now (reloads, revving).
             </summary>
         </member>
+        <member name="T:SingularityFramework.Visuals.Brushlines.BrushLineDrawer">
+            <summary>
+            Collects every brush line drawn this frame into a few meshes (one per colour and fade level) and draws them, so
+            many strokes cost only a handful of draw calls.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.Brushlines.BrushLineDrawer.AddQuad(System.Int32,System.Single,UnityEngine.Vector3,UnityEngine.Vector3,UnityEngine.Vector3,UnityEngine.Vector3)">
+            <summary>
+            A four-cornered patch of a stroke (corners in order round its edge).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.Brushlines.BrushLineDrawer.DrawAll">
+            <summary>
+            Draws everything collected this frame and empties the buffers for the next.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Visuals.Brushlines.BrushLineEffect">
+            <summary>
+            A brush line animation on a map (a stream pulled into a pawn, a weapon forming). Its look advances with the game's
+            speed and stops while paused; anything it does to the game (destroying the blood it pulled away) happens on ticks,
+            so it happens even when the map isn't being looked at.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.Brushlines.BrushLineEffect.AtMoment(System.Single,System.Action)">
+            <summary>
+            Runs "action" once, at "progress" (0 to 1) through the effect, counted in ticks.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Visuals.Brushlines.MapComponent_BrushLines">
+            <summary>
+            Runs every brush line effect on a map: moves them along each frame, draws them in one go per palette, and gives
+            their game effects their ticks.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Visuals.Brushlines.BrushPalette">
+            <summary>
+            The three colours a brush line is painted in: its bright core, its main body and its dark frayed edges.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.Brushlines.BrushPalette.BandFor(System.Single)">
+            <summary>
+            The colour for a bristle by how far out it is: 0 the middle of the stroke, 1 its edge.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Visuals.Brushlines.BrushStroke">
+            <summary>
+            A tapered, dry-brushed stroke along a path in the world: several thin bristles side by side, each with its own
+            weight and its own skips (more toward the edges), so the stroke's edges fray and its middle stays solid.
+            The path can change every frame (to follow a moving pawn); the bristles stay the same.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.Brushlines.BrushStroke.#ctor(System.Func{System.Single,UnityEngine.Vector3},System.Single,System.Int32,System.Int32,System.Single)">
+            <summary>
+            "path": the stroke's centre line, from 0 (where it starts) to 1 (its far end), in world positions.
+            "width": how wide it is, in cells. "ragged": how ragged its ends and edges are (0 to about 0.5).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.Brushlines.BrushStroke.Draw(SingularityFramework.Visuals.Brushlines.BrushLineDrawer,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Draws the stretch of the stroke from "tail" to "head" (both 0 to 1 along it): a stream shooting out has its
+            head moving ahead, and its tail catching up as it's pulled in. "broken": 0 a solid stream, 1 broken into a
+            dashed row of chunks.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.Brushlines.BrushStroke.Frame(System.Single,UnityEngine.Vector3@,UnityEngine.Vector3@)">
+            <summary>
+            The stroke's centre and the direction across it (on the ground) at a point along it.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.Brushlines.BrushStroke.LoopAround(System.Func{System.Single,UnityEngine.Vector3},System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            A point on a strand looping around another path: it swings to either side of it and back and forth along it,
+            so it crosses the path and itself in loops and Xs. Thin at both ends.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Visuals.Brushlines.StreamLineEffect">
+            <summary>
+            A brushy stream pulled from a spot on the ground into a thing (a pawn), along a gentle arc, with two thinner
+            strands looping around it. Its head shoots out to the target, then its tail is pulled in after it. A big source
+            can first rise in short streaks, like blood lifting off a pool.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.Brushlines.StreamLineEffect.Path(System.Single)">
+            <summary>
+            A gentle arc from the source to wherever the target is now (it may be moving).
+            </summary>
+        </member>
         <member name="F:SingularityFramework.Visuals.HediffCompProperties_Aura.onlyWhileDrafted">
             <summary>
             When true, the aura only shows while the pawn is drafted.

@@ -104,7 +104,7 @@ namespace SingularityFramework.Visuals.Brushlines
             if (materials.TryGetValue(key, out Material material)) return material;
             Color color = palette.ColorOfBand(key / 16);
             color.a = (key % 16) / (float)FadeLevels;
-            material = SolidColorMaterials.SimpleSolidColorMaterial(color, false);
+            material = MaterialPool.MatFrom(new MaterialRequest(BaseContent.WhiteTex, ShaderDatabase.Transparent, color));
             materials[key] = material;
             return material;
         }
