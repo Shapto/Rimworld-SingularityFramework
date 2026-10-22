@@ -119,6 +119,535 @@
             Hits the whole line at once, like a beam.
             </summary>
         </member>
+        <member name="T:SingularityFramework.Kitbash.Affine2D">
+            <summary>
+            A 2D affine transform (rotate, scale, stretch, mirror, move), mapping a piece's pixels onto a canvas.
+            Works in image pixels: x to the right, y downward.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.Affine2D.Compose(SingularityFramework.Kitbash.Affine2D,SingularityFramework.Kitbash.Affine2D)">
+            <summary>
+            The transform that does "inner" first, then "outer".
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.Affine2D.TryInvert(SingularityFramework.Kitbash.Affine2D@)">
+            <summary>
+            The transform that undoes this one. False if it squashes everything onto a line.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.Affine2D.MirrorHorizontal(System.Single)">
+            <summary>
+            Flips a piece left to right within its own width.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.Affine2D.TryLayEdge(UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,System.Single,SingularityFramework.Kitbash.Affine2D@)">
+            <summary>
+            Lays a piece's edge (sourceStart to sourceEnd) exactly along a target edge, the other way round, so the new
+            piece sits on the far side of that edge like a lego brick. "stretch" scales the piece across the edge only.
+            False if the source edge has no length.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.Affine2D.TryFromThreePoints(UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,SingularityFramework.Kitbash.Affine2D@)">
+            <summary>
+            The transform sending three piece points exactly onto three target points (used to stand a crystal on its base
+            with its tip aimed at a chosen spot). False if the piece points lie on one line.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.Affine2D.SolveRow(UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Cramer's rule for a * x + b * y + c = value at the three source points.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.Affine2D.AlongDirection(UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,System.Single,System.Single,UnityEngine.Vector2,UnityEngine.Vector2,System.Single,System.Single)">
+            <summary>
+            Lays a piece's long axis (major, minor: unit directions in piece pixels, around pieceCenter) along "direction",
+            scaled to "length" along it and "thickness" across, centred on "middle".
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.ColorSampling">
+            <summary>
+            Reading a colour between pixels.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.ColorSampling.Bilinear(UnityEngine.Color32[],System.Int32,System.Int32,System.Single,System.Single)">
+            <summary>
+            The colour at a point (in pixels, row 0 at the top), blended between the four nearest pixels. Colours are
+            weighted by their alpha, so see-through pixels don't darken the edge of a shape.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.PixelSpan">
+            <summary>
+            A row of pixels a shape covers: from firstColumn to lastColumn, inclusive.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.Edge">
+            <summary>
+            One straight edge of an outline, from start to end.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.ConvexPolygon">
+            <summary>
+            A convex outline, in image pixels (y downward). Every piece's outline is convex (it's the convex hull of the piece),
+            and an affine transform keeps it convex, so placed pieces can use the fast convex-only maths here.
+            </summary>
+        </member>
+        <member name="P:SingularityFramework.Kitbash.ConvexPolygon.LongestSide">
+            <summary>
+            The longer side of the outline's upright bounding box.
+            </summary>
+        </member>
+        <member name="P:SingularityFramework.Kitbash.ConvexPolygon.Thickness">
+            <summary>
+            How thin the outline is at its narrowest: the smallest gap between two parallel lines that squeeze it.
+            Squashed slivers read as clutter, so pieces thinner than a limit are refused.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.ConvexPolygon.Rasterize(System.Int32,System.Int32)">
+            <summary>
+            The rows of pixels whose centres are inside the outline, clipped to the canvas.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.ConvexPolygon.DistanceTo(SingularityFramework.Kitbash.ConvexPolygon)">
+            <summary>
+            How far apart two outlines are; 0 if they touch or overlap.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.ConvexPolygon.Overlaps(SingularityFramework.Kitbash.ConvexPolygon)">
+            <summary>
+            Separating-axis test: two convex outlines overlap unless some edge direction of either one splits them apart.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.ConvexPolygon.SamplePerimeter(System.Single)">
+            <summary>
+            Points every "step" pixels around the outline, for measuring how much of it touches something.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.ConvexPolygon.Hull(System.Collections.Generic.List{UnityEngine.Vector2})">
+            <summary>
+            The convex hull of a set of points (Andrew's monotone chain).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.ConvexPolygon.SimplifyRing(System.Collections.Generic.IList{UnityEngine.Vector2},System.Single)">
+            <summary>
+            Douglas-Peucker on a closed ring: keeps only the corners that stick out more than "tolerance" pixels,
+            so a crystal is described by its handful of real edges.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.PlacedPiece">
+            <summary>
+            One piece as placed: which piece, where (piece pixels to canvas pixels), its outline on the canvas and the pixels
+            it covers. Overlays laid over gaps aren't part of the edge-to-edge tiling, so later pieces don't attach to them.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.KitbashAssembly">
+            <summary>
+            Builds a shape out of pieces, the way an artist kitbashes: outline the shape with big pieces, fill it big to small,
+            each new piece laid edge to edge against the ones already there like lego, then cover what's left with pieces
+            laid over the gaps. Optionally the top edge is crowned with pointed pieces standing straight up.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.KitbashAssembly.CrownStyle">
+            <summary>
+            How a shape's top can end: how long a stretch of top edge each point stands on, how tall the points are
+            (both as shares of the big piece length), and at most how many points.
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Kitbash.KitbashAssembly.outlineToFollow">
+            <summary>
+            Where the shape's real outline is. The outline pass only lays pieces along outline inside this (null: all of it).
+            </summary>
+        </member>
+        <member name="F:SingularityFramework.Kitbash.KitbashAssembly.crownStyleSeed">
+            <summary>
+            Seeds the crown style separately, so every facing of one pawn ends the same way. Null: uses the build's own dice.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashAssembly.Covered">
+            <summary>
+            Everything the placed pieces cover so far.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashAssembly.Render">
+            <summary>
+            Draws every placed piece in order, then closes the hairline seams between them.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashAssembly.TryRepeatPenalty(SingularityFramework.Kitbash.KitbashPiece,SingularityFramework.Kitbash.ConvexPolygon,System.Single@)">
+            <summary>
+            Discourages reusing a piece, and forbids putting a piece right next to another copy of itself.
+            False when the placement is forbidden.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashAssembly.Contact(SingularityFramework.Kitbash.ConvexPolygon)">
+            <summary>
+            How much of a new piece's outline runs along the tiling's outline, in pixels.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashAssembly.OutlineEdges(SingularityFramework.Kitbash.PixelMask,System.Single,SingularityFramework.Kitbash.KitbashRandom,System.Single)">
+            <summary>
+            A shape's outline as a chain of straight segments, roughly "segmentLength" long. "greeble" pushes each corner in
+            or out by up to that many pixels, so pieces laid along it make an irregular edge instead of tracing it.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashAssembly.RemainingOutline(System.Collections.Generic.List{SingularityFramework.Kitbash.Edge})">
+            <summary>
+            The outline segments no piece has reached yet.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashAssembly.FreeEdges">
+            <summary>
+            The open edges of the tiling so far (its outer outline and the outlines of holes in it), wherever they're still
+            inside the shape: the places a new piece can be laid against.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashAssembly.CandidatesOnEdge(SingularityFramework.Kitbash.Edge,System.Collections.Generic.List{SingularityFramework.Kitbash.KitbashPiece},System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Every way one random piece of this size can lay one of its edges along the given edge, either way round.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashAssembly.PlaceOnEdges(System.Func{System.Collections.Generic.List{SingularityFramework.Kitbash.Edge}},SingularityFramework.Kitbash.KitbashSize,System.Single,System.Single,System.Single,System.Single,System.Single,System.Int32,System.Int32,System.Single)">
+            <summary>
+            Round after round, adds the best-scoring piece of this size laid along one of the available edges: the one that
+            covers the most new ground, spills least outside the shape and sits snuggest against what's there.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashAssembly.PatchGaps(System.Int32)">
+            <summary>
+            For each leftover gap: a medium or big piece laid on top, stretched to cover it. Keeps going until no hole is
+            left inside the shape (or it runs out of passes): a hole walled in by pieces is never left open.
+            </summary>
+        </member>
+        <member name="P:SingularityFramework.Kitbash.KitbashAssembly.SeamHoleArea">
+            <summary>
+            Holes smaller than this are closed when the seams are, so they don't need a piece of their own.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashAssembly.DrawnMask">
+            <summary>
+            The pixels the pieces actually draw (before seams are closed).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashAssembly.FitTransform(SingularityFramework.Kitbash.PointSpread,System.Single,System.Single,System.Single,UnityEngine.Vector2)">
+            <summary>
+            Scales a piece by longScale along its own long axis and shortScale across it, turns it by "rotation" and centres
+            it on "middle".
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashAssembly.BaseEdges(UnityEngine.Vector2[])">
+            <summary>
+            The edges of a pointed piece that can serve as its base: roughly across its long axis, at the end away from its tip.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashAssembly.CrownTopEdge">
+            <summary>
+            The shape's top row: pointed pieces standing on its top edge, tip straight up, base as wide as the stretch they
+            stand on. How the top ends is rolled per shape: several points, a pair, or one tall point.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.KitbashCanvas">
+            <summary>
+            The picture being built: pieces are drawn onto it one by one, then it's cleaned up (hard edges, seams closed).
+            Row 0 is the top of the image.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashCanvas.DrawPiece(SingularityFramework.Kitbash.KitbashPiece,SingularityFramework.Kitbash.Affine2D)">
+            <summary>
+            Draws a piece, placed by "placement" (piece pixels to canvas pixels), over what's already there.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashCanvas.Over(UnityEngine.Color32,UnityEngine.Color32)">
+            <summary>
+            Standard "over" blending: the new colour in front, the old one showing through what's see-through of it.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashCanvas.Harden">
+            <summary>
+            Hard edges: every pixel becomes fully solid or fully see-through.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashCanvas.CloseSeams(System.Int32,System.Int32)">
+            <summary>
+            Closes the hairline seams between neighbouring pieces and tiny holes inside the shape, with the colour of the
+            nearest crystal, then hardens the edges.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashCanvas.FillBare(SingularityFramework.Kitbash.PixelMask)">
+            <summary>
+            Paints every pixel of "bare" that the crystals left uncovered with the colour of the nearest crystal, so the
+            result is one solid piece.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashCanvas.CutTo(SingularityFramework.Kitbash.PixelMask)">
+            <summary>
+            Clears everything outside "keep" (cuts a shape back out, so slits and gaps stay open).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashCanvas.Transformed(SingularityFramework.Kitbash.Affine2D,System.Int32,System.Int32)">
+            <summary>
+            This canvas moved, turned or stretched onto a new canvas of the given size ("placement": this canvas's pixels to
+            the new canvas's pixels).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashCanvas.Sample(System.Single,System.Single)">
+            <summary>
+            The colour at a point, blended between the four nearest pixels (see-through pixels don't darken the blend).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashCanvas.Composite(SingularityFramework.Kitbash.KitbashCanvas,System.Int32,System.Int32)">
+            <summary>
+            Draws another canvas on top of this one, shifted by an offset.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.KitbashSize">
+            <summary>
+            How big a piece is meant to be used: big pieces outline and fill first, medium and small fill what's left.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.PieceFrame">
+            <summary>
+            A piece's own axes, in its pixels: its middle, its long direction, the direction across that, and how long and
+            thick it is along each. Used to lay a piece along a direction at a chosen length and thickness.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.KitbashPiece">
+            <summary>
+            One piece to build with (one crystal): its pixels, and its outline as a handful of straight edges. A piece is only
+            ever scaled, rotated, mirrored and stretched, never reshaped, so the result is always made of the artist's pieces.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashPiece.Crop(UnityEngine.Color32[],System.Int32,System.Int32,UnityEngine.Color32[]@,System.Int32@,System.Int32@)">
+            <summary>
+            Cuts away the empty border, so the piece's pixels start where the crystal does.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashPiece.TraceOutline">
+            <summary>
+            The crystal's outline: the convex hull of its solid pixels, simplified to its real edges.
+            Only the leftmost and rightmost solid pixel of each row can be on the hull, so only those are used.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashPiece.OutlinePoints(System.Boolean)">
+            <summary>
+            The piece's outline, flipped if "mirrored".
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashPiece.Frame(System.Boolean)">
+            <summary>
+            The piece's long and short axes, from the spread of its outline corners.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashPiece.Sample(System.Single,System.Single)">
+            <summary>
+            The piece's colour at a point in its own pixels, blended between the four nearest pixels.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.KitbashRandom">
+            <summary>
+            The dice for one build. Seeded, so the same pawn or weapon always gets the same result, and kept separate from
+            the game's own random numbers (Verse.Rand), so building a texture never disturbs the game.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashRandom.Uniform(System.Single,System.Single)">
+            <summary>
+            A number from minimum up to maximum.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashRandom.RangeInclusive(System.Int32,System.Int32)">
+            <summary>
+            A whole number from minimum to maximum, both included.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.PixelMask">
+            <summary>
+            A yes/no grid the size of a canvas: where a shape is, where pieces may go, what's covered so far.
+            Row 0 is the top of the image. Grow, shrink, fill holes, split into pieces and trace outlines.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.PixelMask.Dilated(System.Int32)">
+            <summary>
+            Grows the shape by "steps" pixels in the four straight directions (a diamond), like scipy's binary_dilation.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.PixelMask.Eroded(System.Int32)">
+            <summary>
+            Shrinks the shape by "steps" pixels; the canvas edge counts as empty.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.PixelMask.Opened(System.Int32)">
+            <summary>
+            Removes anything thinner than about twice "steps", keeping the rest the same shape.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.PixelMask.Closed(System.Int32)">
+            <summary>
+            Closes gaps narrower than about twice "steps".
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.PixelMask.StepsTo(System.Boolean)">
+            <summary>
+            For every pixel, how many straight steps it is to the nearest pixel that is "solid" (true) or empty (false).
+            For empty, the area outside the canvas counts as empty.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.PixelMask.HolesFilled">
+            <summary>
+            The shape with every hole filled in: empty areas not connected to the canvas edge.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.PixelMask.Label(System.Int32@)">
+            <summary>
+            Splits the shape into its separate pieces (touching side to side). Returns each pixel's piece number
+            (0 = empty, pieces from 1) and how many pieces there are.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.PixelMask.NearestSolid">
+            <summary>
+            For every pixel, the index of a nearby solid pixel (itself if it's solid; -1 if there are none at all).
+            Used to fill seams and bare spots with the colour of the nearest crystal.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.PixelMask.OutlineRings">
+            <summary>
+            Every outline in the shape, outer ones and those around holes, as closed rings of pixel corners.
+            Built from the cracks between solid and empty pixels, each walked with the solid side on its right.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.PixelMask.CrackGraph">
+            <summary>
+            The cracks between solid and empty pixels, each one pixel side long, joined end to end into rings.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.PixelMask.CrackGraph.NextCrack(System.Int32,System.Boolean[])">
+            <summary>
+            Where two pieces touch only at a corner; turn the tightest way, so each piece keeps its own ring.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.PointSpread">
+            <summary>
+            How a cloud of points is spread out: its middle, the direction it spreads the most (major) and the one across
+            that (minor), and how much it spreads along each (variance). Used to fit a piece to a gap's shape, and to find
+            which way a crystal points.
+            </summary>
+        </member>
+        <member name="P:SingularityFramework.Kitbash.PointSpread.LongExtent">
+            <summary>
+            About the full length of the cloud along its major direction (for an even spread, 4.2 standard deviations
+            covers it end to end).
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.PointSpread.Accumulator">
+            <summary>
+            Adds points one at a time (for counting pixels without making a list of them).
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.SurfaceSpace">
+            <summary>
+            A head or body unrolled flat, so something can be built on it once and then wrapped back around it for every facing.
+            The surface is treated as an upright cylinder whose width at each row comes from the front-facing texture.
+            x is the angle around it (0 = the front, +90 = the pawn's left side, 180 = the back), y is the same row as on the
+            texture. Rows are in canvas pixels, row 0 at the top.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.SurfaceSpace.#ctor(SingularityFramework.Kitbash.PixelMask,System.Single,System.Single)">
+            <summary>
+            "southSilhouette": the texture seen from the front. Only angles from angleMinimum to angleMaximum are kept
+            (-180 to 180 for all the way round).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.SurfaceSpace.ShareDown(System.Single)">
+            <summary>
+            How far down the surface a row is: 0 at its top, 1 at its bottom.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.SurfaceSpace.CameraAngle(System.Int32)">
+            <summary>
+            Which way the camera looks at the surface for a facing (Rot4.AsInt: 0 north, 1 east, 2 south, 3 west), as an
+            angle around it. West is drawn from the east texture flipped, so its silhouette must be flipped too.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.SurfaceSpace.WrapAngle(System.Single)">
+            <summary>
+            Wraps the angle into -180 to 180.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.SurfaceSpace.WrapFlat(SingularityFramework.Kitbash.KitbashCanvas,SingularityFramework.Kitbash.PixelMask,System.Int32,System.Single,System.Single)">
+            <summary>
+            Wraps a flat picture around the surface as seen from one facing: each screen pixel looks up the angle of the
+            surface it shows and takes the flat picture's colour there. Good for something that hugs the surface (a mask).
+            Below "standsUpFrom" (a share down the surface) the cylinder follows this view's own outline row by row, so from
+            the side it reaches over the chin; above it the picture stands straight up at the widest width, and its far side
+            shows over the top wherever the surface doesn't hide it. "standoff" makes it sit a little proud of the surface.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.SurfaceSpace.PlaceRigid(System.Collections.Generic.List{SingularityFramework.Kitbash.PlacedPiece},SingularityFramework.Kitbash.PixelMask,System.Int32,System.Single)">
+            <summary>
+            Places pieces built on the surface for one facing, each drawn whole as a solid rock: only its position wraps
+            around the body, and it narrows a little as it turns away (never squashed into a sliver). Pieces round the back
+            are hidden; ones partly behind only show where they stick out past the outline. Good for growths.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.WeaponProfile">
+            <summary>
+            A weapon texture, straightened: its long axis, which end is the business end, and its centre line and thickness at
+            every step along it. Works in canvas pixels (row 0 at the top).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.WeaponProfile.FillGaps(System.Collections.Generic.List{System.Int32})">
+            <summary>
+            Steps with no pixels (where the weapon is thinner than a pixel at an angle) take their values from their neighbours.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.WeaponProfile.At(System.Single,System.Single@,System.Single@)">
+            <summary>
+            The centre line's offset and the half-thickness at a distance along the axis.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.WeaponProfile.Visible(UnityEngine.Color32[],System.Int32,System.Int32)">
+            <summary>
+            Everywhere the texture shows something.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.WeaponProfile.Body(UnityEngine.Color32[],System.Int32,System.Int32,System.Int32)">
+            <summary>
+            The weapon without its black outline: what it's made of, not the lines drawn around and inside it, so a slit
+            drawn in outline stays open and a copy is as slim as the real thing. Black thicker than a drawn line is a black
+            part of the weapon (a dark blade back), so it stays. "lineWidth": about how thick the linework is, in pixels.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.WeaponSpace">
+            <summary>
+            A weapon turned so its length runs left to right, squeezed along its length. Pieces are assembled here at their
+            normal proportions, so once it's stretched back every piece comes out long and thin, laid along the weapon.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.WeaponSpace.#ctor(SingularityFramework.Kitbash.WeaponProfile,SingularityFramework.Kitbash.PixelMask,System.Int32,System.Single)">
+            <summary>
+            "silhouette": what to bring into the space (the whole weapon, or just its body without outline).
+            "margin": empty room around it, in space pixels. Long thin weapons are squeezed the most; a chunky gun barely,
+            or its grip and magazine would squeeze to nothing. "minimumCompression" forces at least that much squeeze.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.WeaponSpace.Bring(SingularityFramework.Kitbash.PixelMask)">
+            <summary>
+            A mask from the weapon texture, brought into this space (blended between pixels, so thin parts survive).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.WeaponSpace.BackToImage(SingularityFramework.Kitbash.KitbashCanvas)">
+            <summary>
+            A picture built in this space, put back onto the weapon texture.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.WeaponSpace.TryGetTipColumn(SingularityFramework.Kitbash.PixelMask,System.Int32@,System.Int32@)">
+            <summary>
+            The column of the business end's tip in this space.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.WeaponSpace.PointedEnd(SingularityFramework.Kitbash.PixelMask,System.Single)">
+            <summary>
+            The shape with its business end narrowed evenly to a clean point over the last "share" of its length, starting
+            from the shape's own width there so the point doesn't flare into barbs.
+            </summary>
+        </member>
         <member name="T:SingularityFramework.Relics.AptitudeRequirement">
             <summary>
             One condition a pawn has to meet for a relic aptitude tier.
