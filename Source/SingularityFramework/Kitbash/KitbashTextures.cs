@@ -45,29 +45,39 @@ namespace SingularityFramework.Kitbash
         }
 
         /// <summary>
-        /// A finished canvas as a texture the game can draw. "mirrored" flips it left to right.
+        /// A finished canvas as a texture the game can draw. "mirrored" flips it left to right. "readable" keeps a copy
+        /// the game can still change (for pictures that grow in); otherwise the texture only lives on the graphics card.
         /// </summary>
-        public static Texture2D ToTexture(KitbashCanvas canvas, string name, bool mirrored)
+        public static Texture2D ToTexture(KitbashCanvas canvas, string name, bool mirrored, bool readable = false)
         {
-            var pixels = new Color32[canvas.pixels.Length];
-            for (int row = 0; row < canvas.height; row++)
-            {
-                int sourceRow = (canvas.height - 1 - row) * canvas.width;   // Unity textures start at the bottom
-                for (int column = 0; column < canvas.width; column++)
-                {
-                    int sourceColumn = mirrored ? canvas.width - 1 - column : column;
-                    pixels[row * canvas.width + column] = canvas.pixels[sourceRow + sourceColumn];
-                }
-            }
             var texture = new Texture2D(canvas.width, canvas.height, TextureFormat.RGBA32, true)
             {
                 name = name,
                 filterMode = FilterMode.Trilinear,
                 wrapMode = TextureWrapMode.Clamp
             };
-            texture.SetPixels32(pixels);
-            texture.Apply(true, true);
+            texture.SetPixels32(OrientForTexture(canvas.pixels, canvas.width, canvas.height, mirrored));
+            texture.Apply(true, !readable);
             return texture;
+        }
+
+        /// <summary>
+        /// Puts per-pixel values (colours, arrival times) in the order a texture stores them: Unity textures start at the
+        /// bottom, the engine's canvases at the top. "mirrored" also flips them left to right.
+        /// </summary>
+        public static T[] OrientForTexture<T>(T[] values, int width, int height, bool mirrored)
+        {
+            var oriented = new T[values.Length];
+            for (int row = 0; row < height; row++)
+            {
+                int sourceRow = (height - 1 - row) * width;
+                for (int column = 0; column < width; column++)
+                {
+                    int sourceColumn = mirrored ? width - 1 - column : column;
+                    oriented[row * width + column] = values[sourceRow + sourceColumn];
+                }
+            }
+            return oriented;
         }
 
         private static Color32[] FlipRows(Color32[] pixels, int width, int height)

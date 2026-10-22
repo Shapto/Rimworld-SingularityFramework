@@ -372,9 +372,27 @@
             Row 0 is the top of the image.
             </summary>
         </member>
+        <member name="F:SingularityFramework.Kitbash.KitbashCanvas.arrival">
+            <summary>
+            For each pixel, when it appears while the picture grows in, as a share of the whole growth (0 to 1; above 1
+            never). Null if the picture doesn't grow in.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashCanvas.EnableGrowth">
+            <summary>
+            Starts recording when each pixel arrives, for pictures that grow into place.
+            </summary>
+        </member>
         <member name="M:SingularityFramework.Kitbash.KitbashCanvas.DrawPiece(SingularityFramework.Kitbash.KitbashPiece,SingularityFramework.Kitbash.Affine2D)">
             <summary>
             Draws a piece, placed by "placement" (piece pixels to canvas pixels), over what's already there.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashCanvas.DrawGrowingPiece(SingularityFramework.Kitbash.KitbashPiece,SingularityFramework.Kitbash.Affine2D,UnityEngine.Vector2,System.Single,System.Single)">
+            <summary>
+            Draws a piece that grows out from "origin" (a canvas point, usually where it attaches): it starts appearing at
+            "start" and is fully grown "span" later (both shares of the whole growth), its pixels arriving by how far they
+            are from the origin. Only recorded if growth is enabled.
             </summary>
         </member>
         <member name="M:SingularityFramework.Kitbash.KitbashCanvas.Over(UnityEngine.Color32,UnityEngine.Color32)">
@@ -429,10 +447,11 @@
             east flipped like vanilla does.)
             </summary>
         </member>
-        <member name="M:SingularityFramework.Kitbash.KitbashGraphic.Create(SingularityFramework.Kitbash.KitbashCanvas[],System.String,UnityEngine.Shader,UnityEngine.Vector2)">
+        <member name="M:SingularityFramework.Kitbash.KitbashGraphic.Create(SingularityFramework.Kitbash.KitbashCanvas[],System.String,UnityEngine.Shader,UnityEngine.Vector2,System.Int32)">
             <summary>
             "canvasesByRotation": the picture for each facing, indexed by Rot4.AsInt (north, east, south, west), each as
-            seen from that facing. Main thread only.
+            seen from that facing. "growthTicks": if above 0 (and the canvases recorded growth), the picture grows into
+            place over that many ticks instead of appearing at once. Main thread only.
             </summary>
         </member>
         <member name="M:SingularityFramework.Kitbash.KitbashGraphic.Destroy">
@@ -443,6 +462,34 @@
         <member name="M:SingularityFramework.Kitbash.KitbashGraphic.SingleMaterial(SingularityFramework.Kitbash.KitbashCanvas,System.String,UnityEngine.Shader,UnityEngine.Texture2D@)">
             <summary>
             A single generated texture as a material (for things drawn with one facing, like a weapon overlay).
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.Kitbash.KitbashGrowth">
+            <summary>
+            Pictures growing into place: each pixel shows once the growth reaches its arrival time, so crystals creep out from
+            where they attach instead of popping in. Growth follows game time, so it pauses with the game. Once grown, the
+            arrival data is thrown away and the textures are handed to the graphics card for good.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashGrowth.Start(UnityEngine.Texture2D[],SingularityFramework.Kitbash.KitbashCanvas[],System.Int32)">
+            <summary>
+            Starts growing textures in (made readable, from canvases that recorded arrival). The west texture is mirrored,
+            like KitbashGraphic stores it. Main thread only.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashGrowth.Stop(UnityEngine.Texture2D[])">
+            <summary>
+            Stops growing these textures (they're being destroyed).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashGrowth.Update">
+            <summary>
+            Moves every growing picture along. Called every frame on the main thread.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashGrowth.Finish(SingularityFramework.Kitbash.KitbashGrowth.Growing)">
+            <summary>
+            Shows the finished picture and hands the textures to the graphics card for good, freeing their copies here.
             </summary>
         </member>
         <member name="T:SingularityFramework.Kitbash.KitbashSize">
@@ -537,9 +584,16 @@
             Where a texture shows anything, at the given size (a silhouette for the engine to build on).
             </summary>
         </member>
-        <member name="M:SingularityFramework.Kitbash.KitbashTextures.ToTexture(SingularityFramework.Kitbash.KitbashCanvas,System.String,System.Boolean)">
+        <member name="M:SingularityFramework.Kitbash.KitbashTextures.ToTexture(SingularityFramework.Kitbash.KitbashCanvas,System.String,System.Boolean,System.Boolean)">
             <summary>
-            A finished canvas as a texture the game can draw. "mirrored" flips it left to right.
+            A finished canvas as a texture the game can draw. "mirrored" flips it left to right. "readable" keeps a copy
+            the game can still change (for pictures that grow in); otherwise the texture only lives on the graphics card.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashTextures.OrientForTexture``1(``0[],System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Puts per-pixel values (colours, arrival times) in the order a texture stores them: Unity textures start at the
+            bottom, the engine's canvases at the top. "mirrored" also flips them left to right.
             </summary>
         </member>
         <member name="T:SingularityFramework.Kitbash.PixelMask">

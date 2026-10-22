@@ -18,6 +18,9 @@ namespace SingularityFramework.Kitbash
         public ConvexPolygon outline;
         public List<PixelSpan> spans;
         public bool inTiling;
+        public Vector2 growthOrigin;
+        public float growthStart;
+        public float growthSpan;
     }
 
     /// <summary>

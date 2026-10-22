@@ -164,6 +164,8 @@ namespace SingularityFramework.Kitbash
             if (!viewSilhouette.TryGetRowRange(out int firstRow, out int lastRow)) return result;
             float camera = CameraAngle(rotation);
 
+            bool growing = pieces.Exists(placedPiece => placedPiece.growthSpan > 0f);
+            if (growing) result.EnableGrowth();
             var placements = new List<RigidPlacement>();
             foreach (PlacedPiece placedPiece in pieces)
             {
@@ -180,7 +182,7 @@ namespace SingularityFramework.Kitbash
                 float squeeze = Mathf.Max(0.6f, Mathf.Abs(facing));
                 // from its spot on the flat surface to its spot on screen, narrowed about its middle
                 var move = new Affine2D(squeeze, 0f, screen.x - squeeze * centroid.x, 0f, 1f, screen.y - centroid.y);
-                placements.Add(new RigidPlacement { facing = facing, piece = placedPiece.piece, placement = Affine2D.Compose(move, placedPiece.placement) });
+                placements.Add(new RigidPlacement { facing = facing, piece = placedPiece.piece, placement = Affine2D.Compose(move, placedPiece.placement), growth = placedPiece, origin = move.Apply(placedPiece.growthOrigin) });
             }
 
             // furthest round first, so nearer pieces cover them
@@ -189,12 +191,13 @@ namespace SingularityFramework.Kitbash
             {
                 if (rigid.facing >= 0.15f)
                 {
-                    result.DrawPiece(rigid.piece, rigid.placement);
+                    result.DrawGrowingPiece(rigid.piece, rigid.placement, rigid.origin, rigid.growth.growthStart, rigid.growth.growthSpan);
                     continue;
                 }
                 // mostly behind the body: the body covers whatever of it isn't sticking out past the outline
                 var layer = new KitbashCanvas(result.width, result.height);
-                layer.DrawPiece(rigid.piece, rigid.placement);
+                if (growing) layer.EnableGrowth();
+                layer.DrawGrowingPiece(rigid.piece, rigid.placement, rigid.origin, rigid.growth.growthStart, rigid.growth.growthSpan);
                 layer.CutTo(viewSilhouette.Inverted());
                 result.Composite(layer, 0, 0);
             }
@@ -207,6 +210,8 @@ namespace SingularityFramework.Kitbash
             public float facing;   // 1 facing the camera, 0 side on, below 0 turning away
             public KitbashPiece piece;
             public Affine2D placement;
+            public PlacedPiece growth;   // when and from where it grows
+            public Vector2 origin;       // where it grows from, on screen
         }
 
         private static void GetWidest(PixelMask mask, out float center, out float radius)

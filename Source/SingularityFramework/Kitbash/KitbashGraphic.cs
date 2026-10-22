@@ -27,10 +27,12 @@ namespace SingularityFramework.Kitbash
 
         /// <summary>
         /// "canvasesByRotation": the picture for each facing, indexed by Rot4.AsInt (north, east, south, west), each as
-        /// seen from that facing. Main thread only.
+        /// seen from that facing. "growthTicks": if above 0 (and the canvases recorded growth), the picture grows into
+        /// place over that many ticks instead of appearing at once. Main thread only.
         /// </summary>
-        public static KitbashGraphic Create(KitbashCanvas[] canvasesByRotation, string name, Shader shader, Vector2 drawSize)
+        public static KitbashGraphic Create(KitbashCanvas[] canvasesByRotation, string name, Shader shader, Vector2 drawSize, int growthTicks = 0)
         {
+            bool grows = growthTicks > 0 && System.Array.TrueForAll(canvasesByRotation, canvas => canvas.arrival != null);
             var graphic = new KitbashGraphic
             {
                 path = name,
@@ -41,7 +43,7 @@ namespace SingularityFramework.Kitbash
             for (int rotation = 0; rotation < 4; rotation++)
             {
                 bool west = rotation == Rot4.West.AsInt;
-                graphic.textures[rotation] = KitbashTextures.ToTexture(canvasesByRotation[rotation], $"{name}_{rotation}", west);
+                graphic.textures[rotation] = KitbashTextures.ToTexture(canvasesByRotation[rotation], $"{name}_{rotation}", west, grows);
                 // its own material, not one from the shared pool, so it can be freed with the texture
                 graphic.materials[rotation] = new Material(shader)
                 {
@@ -57,6 +59,7 @@ namespace SingularityFramework.Kitbash
             }
             MaterialsField.SetValue(graphic, graphic.materials);
             WestFlippedField.SetValue(graphic, true);
+            if (grows) KitbashGrowth.Start(graphic.textures, canvasesByRotation, growthTicks);
             return graphic;
         }
 
@@ -65,6 +68,7 @@ namespace SingularityFramework.Kitbash
         /// </summary>
         public void Destroy()
         {
+            KitbashGrowth.Stop(textures);
             foreach (Material material in materials) if (material != null) UnityEngine.Object.Destroy(material);
             foreach (Texture2D texture in textures) if (texture != null) UnityEngine.Object.Destroy(texture);
         }

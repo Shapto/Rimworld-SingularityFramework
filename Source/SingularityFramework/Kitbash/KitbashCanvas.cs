@@ -27,20 +27,52 @@ namespace SingularityFramework.Kitbash
         }
 
         /// <summary>
+        /// For each pixel, when it appears while the picture grows in, as a share of the whole growth (0 to 1; above 1
+        /// never). Null if the picture doesn't grow in.
+        /// </summary>
+        public float[] arrival;
+
+        /// <summary>
+        /// Starts recording when each pixel arrives, for pictures that grow into place.
+        /// </summary>
+        public void EnableGrowth()
+        {
+            arrival = new float[pixels.Length];
+            for (int index = 0; index < arrival.Length; index++) arrival[index] = NeverArrives;
+        }
+
+        public const float NeverArrives = 2f;
+
+        /// <summary>
         /// Draws a piece, placed by "placement" (piece pixels to canvas pixels), over what's already there.
         /// </summary>
         public void DrawPiece(KitbashPiece piece, Affine2D placement)
         {
+            DrawGrowingPiece(piece, placement, Vector2.zero, 0f, 0f);
+        }
+
+        /// <summary>
+        /// Draws a piece that grows out from "origin" (a canvas point, usually where it attaches): it starts appearing at
+        /// "start" and is fully grown "span" later (both shares of the whole growth), its pixels arriving by how far they
+        /// are from the origin. Only recorded if growth is enabled.
+        /// </summary>
+        public void DrawGrowingPiece(KitbashPiece piece, Affine2D placement, Vector2 origin, float start, float span)
+        {
             if (!placement.TryInvert(out Affine2D canvasToPiece)) return;
-            ConvexPolygon placedOutline = new ConvexPolygon(placement.ApplyAll(new[]
+            Vector2[] corners = placement.ApplyAll(new[]
             {
                 new Vector2(0f, 0f), new Vector2(piece.width, 0f), new Vector2(piece.width, piece.height), new Vector2(0f, piece.height)
-            }));
+            });
+            ConvexPolygon placedOutline = new ConvexPolygon(corners);
             placedOutline.GetBounds(out float minimumX, out float minimumY, out float maximumX, out float maximumY);
             int firstColumn = Mathf.Max(0, Mathf.FloorToInt(minimumX) - 1);
             int lastColumn = Mathf.Min(width - 1, Mathf.CeilToInt(maximumX) + 1);
             int firstRow = Mathf.Max(0, Mathf.FloorToInt(minimumY) - 1);
             int lastRow = Mathf.Min(height - 1, Mathf.CeilToInt(maximumY) + 1);
+
+            // how far the piece reaches from its origin, so its far end arrives last
+            float reach = 1f;
+            if (arrival != null) foreach (Vector2 corner in placedOutline.points) reach = Mathf.Max(reach, Vector2.Distance(corner, origin));
 
             for (int row = firstRow; row <= lastRow; row++)
             {
@@ -51,6 +83,9 @@ namespace SingularityFramework.Kitbash
                     if (color.a == 0) continue;
                     int index = row * width + column;
                     pixels[index] = Over(color, pixels[index]);
+                    if (arrival == null) continue;
+                    float pixelArrival = start + span * Vector2.Distance(new Vector2(column + 0.5f, row + 0.5f), origin) / reach;
+                    arrival[index] = Mathf.Min(arrival[index], pixelArrival);
                 }
             }
         }
@@ -192,6 +227,7 @@ namespace SingularityFramework.Kitbash
                     if (color.a == 0) continue;
                     int index = targetRow * width + targetColumn;
                     pixels[index] = Over(color, pixels[index]);
+                    if (arrival != null && front.arrival != null) arrival[index] = Mathf.Min(arrival[index], front.arrival[row * front.width + column]);
                 }
             }
         }

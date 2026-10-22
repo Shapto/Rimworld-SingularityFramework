@@ -72,6 +72,7 @@ namespace SingularityFramework.Kitbash
         public override void GameComponentUpdate()
         {
             KitbashBuilds.DeliverFinished();
+            KitbashGrowth.Update();
         }
     }
 }

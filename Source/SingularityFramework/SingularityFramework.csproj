@@ -82,6 +82,7 @@
     <Compile Include="Kitbash\KitbashBuilds.cs" />
     <Compile Include="Kitbash\KitbashCanvas.cs" />
     <Compile Include="Kitbash\KitbashGraphic.cs" />
+    <Compile Include="Kitbash\KitbashGrowth.cs" />
     <Compile Include="Kitbash\KitbashPiece.cs" />
     <Compile Include="Kitbash\KitbashPieceSetDef.cs" />
     <Compile Include="Kitbash\KitbashRandom.cs" />
