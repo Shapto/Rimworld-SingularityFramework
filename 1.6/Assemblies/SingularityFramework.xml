@@ -1473,6 +1473,36 @@
             A gentle arc from the source to wherever the target is now (it may be moving).
             </summary>
         </member>
+        <member name="T:SingularityFramework.Visuals.Brushlines.WeaponFormingEffect">
+            <summary>
+            Brush lines forming a weapon in a pawn's hand: a stream runs from the pawn's body to the grip, a thick stroke
+            shoots along the weapon from grip to tip with strands looping around it, then the lines break into dashed chunks
+            and fade while the weapon's own picture hardens in under them.
+            Dissolving plays it backwards: the chunks join up, pull back from the tip to the grip and drain into the body.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.Brushlines.WeaponFormingEffect.#ctor(SingularityFramework.Visuals.Brushlines.BrushPalette,Verse.Pawn,Verse.Thing,System.Func{UnityEngine.Vector2},System.Func{UnityEngine.Vector2},UnityEngine.Vector3,UnityEngine.Vector3,System.Single,System.Boolean,System.Int32,System.Single)">
+            <summary>
+            "gripOffset", "tipOffset": where the weapon's ends are to start with, from the holder's draw position (see
+            TryGetWeaponEnds and DefaultEnds). While forming they follow the weapon as it's drawn.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.Brushlines.WeaponFormingEffect.TryGetWeaponEnds(Verse.Pawn,Verse.Thing,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector3@,UnityEngine.Vector3@)">
+            <summary>
+            Where a held weapon's ends are right now, from the holder's draw position. False if the weapon wasn't drawn
+            this frame (off screen, or not held).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.Brushlines.WeaponFormingEffect.DefaultEnds(UnityEngine.Vector3@,UnityEngine.Vector3@)">
+            <summary>
+            A guess at where a weapon held at rest would be, for when it hasn't been drawn yet.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Visuals.Brushlines.WeaponFormingEffect.FeedPath(System.Single)">
+            <summary>
+            From the middle of the holder's body to the grip, on a slight curve.
+            </summary>
+        </member>
         <member name="F:SingularityFramework.Visuals.HediffCompProperties_Aura.onlyWhileDrafted">
             <summary>
             When true, the aura only shows while the pawn is drafted.

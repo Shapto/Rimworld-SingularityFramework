@@ -129,6 +129,7 @@
     <Compile Include="Visuals\Brushlines\BrushPallete.cs" />
     <Compile Include="Visuals\Brushlines\Brushstroke.cs" />
     <Compile Include="Visuals\Brushlines\StreamLineEffect.cs" />
+    <Compile Include="Visuals\Brushlines\WeaponFormingEffect.cs" />
     <Compile Include="Visuals\HediffCompProperties_Aura.cs" />
     <Compile Include="Visuals\WeaponEffects.cs" />
     <Compile Include="WeaponAnchor\BodyShapeAnalyzer.cs" />

@@ -22,6 +22,8 @@ namespace SingularityFramework.Visuals.Brushlines
         private int ticksUntilMoment = -1;
         private Action moment;
 
+        public virtual AltitudeLayer Layer => AltitudeLayer.MoteLow;
+
         protected BrushLineEffect(BrushPalette palette, float durationSeconds)
         {
             this.palette = palette;
@@ -59,7 +61,7 @@ namespace SingularityFramework.Visuals.Brushlines
     public class MapComponent_BrushLines : MapComponent
     {
         private readonly List<BrushLineEffect> effects = new List<BrushLineEffect>();
-        private readonly Dictionary<BrushPalette, BrushLineDrawer> drawers = new Dictionary<BrushPalette, BrushLineDrawer>();
+        private readonly Dictionary<(BrushPalette palette, AltitudeLayer layer), BrushLineDrawer> drawers = new Dictionary<(BrushPalette palette, AltitudeLayer layer), BrushLineDrawer>();
 
         public MapComponent_BrushLines(Map map) : base(map)
         {
@@ -90,18 +92,18 @@ namespace SingularityFramework.Visuals.Brushlines
                     effects.RemoveAt(index);
                     continue;
                 }
-                if (visible && effect.ageSeconds < effect.durationSeconds) effect.Draw(DrawerFor(effect.palette), effect.Progress);
+                if (visible && effect.ageSeconds < effect.durationSeconds) effect.Draw(DrawerFor(effect.palette, effect.Layer), effect.Progress);
             }
             if (!visible) return;
             foreach (BrushLineDrawer drawer in drawers.Values) drawer.DrawAll();
         }
 
-        private BrushLineDrawer DrawerFor(BrushPalette palette)
+        private BrushLineDrawer DrawerFor(BrushPalette palette, AltitudeLayer layer)
         {
-            if (!drawers.TryGetValue(palette, out BrushLineDrawer drawer))
+            if (!drawers.TryGetValue((palette, layer), out BrushLineDrawer drawer))
             {
-                drawer = new BrushLineDrawer(palette, AltitudeLayer.MoteLow.AltitudeFor());
-                drawers[palette] = drawer;
+                drawer = new BrushLineDrawer(palette, layer.AltitudeFor());
+                drawers[(palette, layer)] = drawer;
             }
             return drawer;
         }
