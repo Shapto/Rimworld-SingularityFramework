@@ -134,6 +134,7 @@
     <Compile Include="SingularityMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WeaponAnchor\WeaponDrawRecord.cs" />
+    <Compile Include="WeaponAnchor\WeaponOverlays.cs" />
     <Compile Include="WeaponAnchor\WeaponShape.cs" />
     <Compile Include="WeaponAnchor\WeaponShapeAnalyzer.cs" />
   </ItemGroup>

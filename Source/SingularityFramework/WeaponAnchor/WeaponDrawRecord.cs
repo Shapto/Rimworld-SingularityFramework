@@ -15,6 +15,7 @@ namespace SingularityFramework.WeaponAnchor
     public class WeaponDrawRecord
     {
         public ThingDef weaponDef;
+        public Thing weapon;
         public Vector3 position;
         public float drawAngle;     // degrees, clockwise on screen
         public bool flipped;        // drawn mirrored
@@ -28,7 +29,7 @@ namespace SingularityFramework.WeaponAnchor
 
         private static readonly Dictionary<Pawn, WeaponDrawRecord> recordsByPawn = new Dictionary<Pawn, WeaponDrawRecord>();
 
-        public static void Record(Pawn pawn, ThingDef weaponDef, Vector3 position, float drawAngle, bool flipped, Vector2 drawSize)
+        public static void Record(Pawn pawn, Thing weapon, Vector3 position, float drawAngle, bool flipped, Vector2 drawSize)
         {
             if (!recordsByPawn.TryGetValue(pawn, out WeaponDrawRecord record))
             {
@@ -36,36 +37,40 @@ namespace SingularityFramework.WeaponAnchor
                 recordsByPawn[pawn] = record;
             }
 
-            // An animation mod's record for this frame takes priority over vanilla's.
+            // An animation mod's record for this frame takes priority over vanilla's (it already drew the overlays).
             if (record.usesMatrix && record.frame == Time.frameCount) return;
 
-            record.weaponDef = weaponDef;
+            record.weapon = weapon;
+            record.weaponDef = weapon.def;
             record.position = position;
             record.drawAngle = drawAngle;
             record.flipped = flipped;
             record.drawSize = drawSize;
             record.frame = Time.frameCount;
             record.usesMatrix = false;
+            WeaponOverlays.DrawFor(pawn, weapon, record);
         }
 
         /// <summary>
         /// Records a weapon drawn with a full transform matrix (for example by an animation mod).
         /// The matrix maps the weapon's quad (-0.5 to 0.5 on x and z) to the world, like vanilla's plane mesh.
         /// </summary>
-        public static void RecordMatrix(Pawn pawn, ThingDef weaponDef, Matrix4x4 drawMatrix, bool flippedHorizontally, bool flippedVertically)
+        public static void RecordMatrix(Pawn pawn, Thing weapon, Matrix4x4 drawMatrix, bool flippedHorizontally, bool flippedVertically)
         {
             if (!recordsByPawn.TryGetValue(pawn, out WeaponDrawRecord record))
             {
                 record = new WeaponDrawRecord();
                 recordsByPawn[pawn] = record;
             }
-            record.weaponDef = weaponDef;
+            record.weapon = weapon;
+            record.weaponDef = weapon.def;
             record.usesMatrix = true;
             record.drawMatrix = drawMatrix;
             record.flipped = flippedHorizontally;
             record.flippedVertically = flippedVertically;
             record.position = drawMatrix.MultiplyPoint3x4(Vector3.zero);
             record.frame = Time.frameCount;
+            WeaponOverlays.DrawFor(pawn, weapon, record);
         }
 
 

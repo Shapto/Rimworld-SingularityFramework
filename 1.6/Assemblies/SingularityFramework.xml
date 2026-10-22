@@ -1507,7 +1507,7 @@
             so effects anchored to the weapon always follow it as it's actually shown.
             </summary>
         </member>
-        <member name="M:SingularityFramework.WeaponAnchor.WeaponDrawRecord.RecordMatrix(Verse.Pawn,Verse.ThingDef,UnityEngine.Matrix4x4,System.Boolean,System.Boolean)">
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponDrawRecord.RecordMatrix(Verse.Pawn,Verse.Thing,UnityEngine.Matrix4x4,System.Boolean,System.Boolean)">
             <summary>
             Records a weapon drawn with a full transform matrix (for example by an animation mod).
             The matrix maps the weapon's quad (-0.5 to 0.5 on x and z) to the world, like vanilla's plane mesh.
@@ -1536,6 +1536,34 @@
         <member name="M:SingularityFramework.WeaponAnchor.WeaponDrawRecord.ClearAll">
             <summary>
             Forgets everything, e.g. when a game is loaded. Records rebuild on the next frame.
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.WeaponAnchor.WeaponOverlayProvider">
+            <summary>
+            Asks whether to draw something over a pawn's held weapon. True with the material to draw, and how much bigger than
+            the weapon to draw it, across and along (1 = exactly the weapon's size; bigger for overlays with room around them).
+            </summary>
+        </member>
+        <member name="T:SingularityFramework.WeaponAnchor.WeaponOverlays">
+            <summary>
+            Pictures drawn over held weapons (a coating, a glow), following the weapon exactly however it's drawn: by vanilla,
+            or by an animation mod. Mods register a provider once; it's asked every time a weapon is drawn.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponOverlays.Register(SingularityFramework.WeaponAnchor.WeaponOverlayProvider)">
+            <summary>
+            Adds a provider (call once, for example from the mod's constructor).
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponOverlays.DrawFor(Verse.Pawn,Verse.Thing,SingularityFramework.WeaponAnchor.WeaponDrawRecord)">
+            <summary>
+            Draws every overlay a provider wants on this weapon, with the weapon's own transform. Called right after the
+            weapon is drawn and recorded.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.WeaponAnchor.WeaponOverlays.OverlayMatrix(SingularityFramework.WeaponAnchor.WeaponDrawRecord,UnityEngine.Vector2)">
+            <summary>
+            The weapon's own transform, scaled by "drawScale" about the weapon's middle and lifted just above it.
             </summary>
         </member>
         <member name="T:SingularityFramework.WeaponAnchor.WeaponShape">

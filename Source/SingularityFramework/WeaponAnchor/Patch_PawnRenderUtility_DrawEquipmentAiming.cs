@@ -40,7 +40,7 @@ namespace SingularityFramework.WeaponAnchor
             }
             drawAngle %= 360f;
 
-            WeaponDrawRecord.Record(equipmentTracker.pawn, eq.def, drawLoc, drawAngle, flipped, eq.Graphic.drawSize);
+            WeaponDrawRecord.Record(equipmentTracker.pawn, eq, drawLoc, drawAngle, flipped, eq.Graphic.drawSize);
 
         }
     }

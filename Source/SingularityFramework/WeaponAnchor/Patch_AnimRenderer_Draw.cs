@@ -87,7 +87,7 @@ namespace SingularityFramework.WeaponAnchor
                 bool flipVertically = (bool)snapshotFlipYField.GetValue(snapshot) ^ (bool)overrideFlipYField.GetValue(overrideData) ^ mirrorVertical;
 
                 Matrix4x4 worldMatrix = rootTransform * (Matrix4x4)snapshotWorldMatrixField.GetValue(snapshot);
-                WeaponDrawRecord.RecordMatrix(holder, weapon.def, worldMatrix, flipHorizontally, flipVertically);
+                WeaponDrawRecord.RecordMatrix(holder, weapon, worldMatrix, flipHorizontally, flipVertically);
             }
         }
     }
