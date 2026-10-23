@@ -84,11 +84,28 @@ namespace SingularityFramework.Kitbash
                 float progress = (now - growth.startTick) / (float)growth.durationTicks;
                 if (progress >= 1f)
                 {
-                    SetAlpha(growth, 1f);
+                    Finish(growth);
                     growing.RemoveAt(index);
                     continue;
                 }
                 SetAlpha(growth, AlphaFor(progress));
+            }
+        }
+
+        /// <summary>
+        /// Fully grown: the arrival times leave the alpha (the shader would otherwise show them as see-through), the
+        /// mipmaps are built once, and the texture's readable copy is freed.
+        /// </summary>
+        private static void Finish(Growing growth)
+        {
+            SetAlpha(growth, 1f);
+            foreach (Material material in growth.materials)
+            {
+                if (!(material?.mainTexture is Texture2D texture) || !texture.isReadable) continue;
+                Color32[] pixels = texture.GetPixels32();
+                for (int index = 0; index < pixels.Length; index++) if (pixels[index].a != 0) pixels[index].a = 255;
+                texture.SetPixels32(pixels);
+                texture.Apply(true, true);
             }
         }
 

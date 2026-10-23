@@ -45,10 +45,11 @@ namespace SingularityFramework.Kitbash
         }
 
         /// <summary>
-        /// A finished canvas as a texture the game can draw. "mirrored" flips it left to right. If the canvas recorded
-        /// growth, its arrival times go into the alpha (see KitbashGrowth); fully grown it looks the same.
+        /// A finished canvas as a texture the game can draw. "mirrored" flips it left to right. "encodeGrowth": it's about
+        /// to grow in, so its arrival times go into the alpha and a readable copy is kept, for KitbashGrowth to make it
+        /// solid again at the end. Otherwise the texture only lives on the graphics card.
         /// </summary>
-        public static Texture2D ToTexture(KitbashCanvas canvas, string name, bool mirrored)
+        public static Texture2D ToTexture(KitbashCanvas canvas, string name, bool mirrored, bool encodeGrowth = false)
         {
             var texture = new Texture2D(canvas.width, canvas.height, TextureFormat.RGBA32, true)
             {
@@ -56,18 +57,19 @@ namespace SingularityFramework.Kitbash
                 filterMode = FilterMode.Trilinear,
                 wrapMode = TextureWrapMode.Clamp
             };
-            texture.SetPixels32(TexturePixels(canvas, mirrored));
-            texture.Apply(true, true);
+            texture.SetPixels32(TexturePixels(canvas, mirrored, encodeGrowth));
+            texture.Apply(true, !encodeGrowth);
             return texture;
         }
 
         /// <summary>
-        /// A canvas's pixels in texture order, with each solid pixel's arrival time in its alpha when it recorded growth.
+        /// A canvas's pixels in texture order. With "encodeGrowth" (and a canvas that recorded growth), each solid pixel's
+        /// arrival time goes into its alpha.
         /// </summary>
-        public static Color32[] TexturePixels(KitbashCanvas canvas, bool mirrored)
+        public static Color32[] TexturePixels(KitbashCanvas canvas, bool mirrored, bool encodeGrowth)
         {
             Color32[] pixels = OrientForTexture(canvas.pixels, canvas.width, canvas.height, mirrored);
-            if (canvas.arrival == null) return pixels;
+            if (!encodeGrowth || canvas.arrival == null) return pixels;
             float[] arrival = OrientForTexture(canvas.arrival, canvas.width, canvas.height, mirrored);
             for (int index = 0; index < pixels.Length; index++) pixels[index].a = pixels[index].a > KitbashCanvas.SolidAlpha ? KitbashGrowth.EncodeArrival(arrival[index]) : (byte)0;
             return pixels;

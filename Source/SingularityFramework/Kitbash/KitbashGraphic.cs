@@ -43,7 +43,7 @@ namespace SingularityFramework.Kitbash
             for (int rotation = 0; rotation < 4; rotation++)
             {
                 bool west = rotation == Rot4.West.AsInt;
-                graphic.textures[rotation] = KitbashTextures.ToTexture(canvasesByRotation[rotation], $"{name}_{rotation}", west);
+                graphic.textures[rotation] = KitbashTextures.ToTexture(canvasesByRotation[rotation], $"{name}_{rotation}", west, grows);
                 // its own material, not one from the shared pool, so it can be freed with the texture
                 graphic.materials[rotation] = new Material(shader)
                 {
@@ -79,14 +79,15 @@ namespace SingularityFramework.Kitbash
         /// </summary>
         public static Material SingleMaterial(KitbashCanvas canvas, string name, Shader shader, out Texture2D texture, int growthTicks = 0)
         {
-            texture = KitbashTextures.ToTexture(canvas, name, false);
+            bool grows = growthTicks > 0 && canvas.arrival != null;
+            texture = KitbashTextures.ToTexture(canvas, name, false, grows);
             var material = new Material(shader)
             {
                 name = name,
                 mainTexture = texture,
                 color = Color.white
             };
-            if (growthTicks > 0 && canvas.arrival != null) KitbashGrowth.Start(new[] { material }, growthTicks);
+            if (grows) KitbashGrowth.Start(new[] { material }, growthTicks);
             return material;
         }
     }
