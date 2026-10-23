@@ -45,10 +45,10 @@ namespace SingularityFramework.Kitbash
         }
 
         /// <summary>
-        /// A finished canvas as a texture the game can draw. "mirrored" flips it left to right. "readable" keeps a copy
-        /// the game can still change (for pictures that grow in); otherwise the texture only lives on the graphics card.
+        /// A finished canvas as a texture the game can draw. "mirrored" flips it left to right. If the canvas recorded
+        /// growth, its arrival times go into the alpha (see KitbashGrowth); fully grown it looks the same.
         /// </summary>
-        public static Texture2D ToTexture(KitbashCanvas canvas, string name, bool mirrored, bool readable = false)
+        public static Texture2D ToTexture(KitbashCanvas canvas, string name, bool mirrored)
         {
             var texture = new Texture2D(canvas.width, canvas.height, TextureFormat.RGBA32, true)
             {
@@ -56,9 +56,21 @@ namespace SingularityFramework.Kitbash
                 filterMode = FilterMode.Trilinear,
                 wrapMode = TextureWrapMode.Clamp
             };
-            texture.SetPixels32(OrientForTexture(canvas.pixels, canvas.width, canvas.height, mirrored));
-            texture.Apply(true, !readable);
+            texture.SetPixels32(TexturePixels(canvas, mirrored));
+            texture.Apply(true, true);
             return texture;
+        }
+
+        /// <summary>
+        /// A canvas's pixels in texture order, with each solid pixel's arrival time in its alpha when it recorded growth.
+        /// </summary>
+        public static Color32[] TexturePixels(KitbashCanvas canvas, bool mirrored)
+        {
+            Color32[] pixels = OrientForTexture(canvas.pixels, canvas.width, canvas.height, mirrored);
+            if (canvas.arrival == null) return pixels;
+            float[] arrival = OrientForTexture(canvas.arrival, canvas.width, canvas.height, mirrored);
+            for (int index = 0; index < pixels.Length; index++) pixels[index].a = pixels[index].a > KitbashCanvas.SolidAlpha ? KitbashGrowth.EncodeArrival(arrival[index]) : (byte)0;
+            return pixels;
         }
 
         /// <summary>

@@ -43,7 +43,7 @@ namespace SingularityFramework.Kitbash
             for (int rotation = 0; rotation < 4; rotation++)
             {
                 bool west = rotation == Rot4.West.AsInt;
-                graphic.textures[rotation] = KitbashTextures.ToTexture(canvasesByRotation[rotation], $"{name}_{rotation}", west, grows);
+                graphic.textures[rotation] = KitbashTextures.ToTexture(canvasesByRotation[rotation], $"{name}_{rotation}", west);
                 // its own material, not one from the shared pool, so it can be freed with the texture
                 graphic.materials[rotation] = new Material(shader)
                 {
@@ -59,7 +59,7 @@ namespace SingularityFramework.Kitbash
             }
             MaterialsField.SetValue(graphic, graphic.materials);
             WestFlippedField.SetValue(graphic, true);
-            if (grows) KitbashGrowth.Start(graphic.textures, canvasesByRotation, growthTicks);
+            if (grows) KitbashGrowth.Start(graphic.materials, growthTicks);
             return graphic;
         }
 
@@ -68,7 +68,7 @@ namespace SingularityFramework.Kitbash
         /// </summary>
         public void Destroy()
         {
-            KitbashGrowth.Stop(textures);
+            KitbashGrowth.Stop(materials);
             foreach (Material material in materials) if (material != null) UnityEngine.Object.Destroy(material);
             foreach (Texture2D texture in textures) if (texture != null) UnityEngine.Object.Destroy(texture);
         }
@@ -79,15 +79,15 @@ namespace SingularityFramework.Kitbash
         /// </summary>
         public static Material SingleMaterial(KitbashCanvas canvas, string name, Shader shader, out Texture2D texture, int growthTicks = 0)
         {
-            bool grows = growthTicks > 0 && canvas.arrival != null;
-            texture = KitbashTextures.ToTexture(canvas, name, false, grows);
-            if (grows) KitbashGrowth.Start(new[] { texture }, new[] { canvas }, growthTicks);
-            return new Material(shader)
+            texture = KitbashTextures.ToTexture(canvas, name, false);
+            var material = new Material(shader)
             {
                 name = name,
                 mainTexture = texture,
                 color = Color.white
             };
+            if (growthTicks > 0 && canvas.arrival != null) KitbashGrowth.Start(new[] { material }, growthTicks);
+            return material;
         }
     }
 }
