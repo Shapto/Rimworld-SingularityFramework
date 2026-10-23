@@ -1461,6 +1461,37 @@
             so it crosses the path and itself in loops and Xs. Thin at both ends.
             </summary>
         </member>
+        <member name="T:SingularityFramework.Visuals.Brushlines.ShatterLineEffect">
+            <summary>
+            Represents a visual effect that simulates shattering lines or streams falling from a source point to the ground,
+            typically used for rendering dynamic, animated brush strokes in a shatter or breakage visual.
+            </summary>
+            <remarks>The effect generates multiple falling streams, each following a curved trajectory from the
+            source to a landing point on the ground. The appearance and spread of the streams can be customized via
+            constructor parameters. The landing points for each stream are exposed through the landingPoints collection,
+            which can be used for further visual effects or interactions. This effect is rendered above most other visual
+            elements, as indicated by its AltitudeLayer.</remarks>
+        </member>
+        <member name="M:SingularityFramework.Visuals.Brushlines.ShatterLineEffect.#ctor(SingularityFramework.Visuals.Brushlines.BrushPalette,UnityEngine.Vector3,UnityEngine.Vector3,System.Single,System.Int32,System.Single,System.Single,System.Int32,System.Single)">
+            <summary>
+            Initializes a new instance of the ShatterLineEffect class, creating multiple falling streams that originate
+            from a source point and land near a specified ground center, simulating a shattering line effect.
+            </summary>
+            <remarks>The generated streams will have randomized positions and delays based on the provided
+            seed, allowing for consistent visual results when the same parameters are used. The effect is intended for
+            use in visualizations or animations where a shattering or splitting line is desired.</remarks>
+            <param name="palette">The brush palette used to determine the colors for the effect's visual elements.</param>
+            <param name="source">The starting position in world coordinates from which the streams originate.</param>
+            <param name="groundCenter">The central point on the ground toward which the streams are directed.</param>
+            <param name="side">A directional multiplier that determines the orientation of the effect. Positive or negative values control
+            which side of the ground center the streams fan out toward.</param>
+            <param name="streamCount">The number of individual falling streams to generate. Must be greater than zero.</param>
+            <param name="spread">The maximum distance, in world units, that streams can deviate from the central axis, controlling the
+            overall width of the effect.</param>
+            <param name="width">The base width, in world units, of each stream's visual stroke.</param>
+            <param name="seed">The seed value for the random number generator, ensuring reproducible stream placement and variation.</param>
+            <param name="durationSeconds">The total duration, in seconds, for which the effect remains active.</param>
+        </member>
         <member name="T:SingularityFramework.Visuals.Brushlines.StreamLineEffect">
             <summary>
             A brushy stream pulled from a spot on the ground into a thing (a pawn), along a gentle arc, with two thinner
