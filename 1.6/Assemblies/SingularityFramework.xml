@@ -508,6 +508,12 @@
             Moves every growing picture along. Called every frame on the main thread.
             </summary>
         </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashGrowth.Finish(SingularityFramework.Kitbash.KitbashGrowth.Growing)">
+            <summary>
+            Fully grown: the arrival times leave the alpha (the shader would otherwise show them as see-through), the
+            mipmaps are built once, and the texture's readable copy is freed.
+            </summary>
+        </member>
         <member name="T:SingularityFramework.Kitbash.KitbashSize">
             <summary>
             How big a piece is meant to be used: big pieces outline and fill first, medium and small fill what's left.
@@ -600,15 +606,17 @@
             Where a texture shows anything, at the given size (a silhouette for the engine to build on).
             </summary>
         </member>
-        <member name="M:SingularityFramework.Kitbash.KitbashTextures.ToTexture(SingularityFramework.Kitbash.KitbashCanvas,System.String,System.Boolean)">
+        <member name="M:SingularityFramework.Kitbash.KitbashTextures.ToTexture(SingularityFramework.Kitbash.KitbashCanvas,System.String,System.Boolean,System.Boolean)">
             <summary>
-            A finished canvas as a texture the game can draw. "mirrored" flips it left to right. If the canvas recorded
-            growth, its arrival times go into the alpha (see KitbashGrowth); fully grown it looks the same.
+            A finished canvas as a texture the game can draw. "mirrored" flips it left to right. "encodeGrowth": it's about
+            to grow in, so its arrival times go into the alpha and a readable copy is kept, for KitbashGrowth to make it
+            solid again at the end. Otherwise the texture only lives on the graphics card.
             </summary>
         </member>
-        <member name="M:SingularityFramework.Kitbash.KitbashTextures.TexturePixels(SingularityFramework.Kitbash.KitbashCanvas,System.Boolean)">
+        <member name="M:SingularityFramework.Kitbash.KitbashTextures.TexturePixels(SingularityFramework.Kitbash.KitbashCanvas,System.Boolean,System.Boolean)">
             <summary>
-            A canvas's pixels in texture order, with each solid pixel's arrival time in its alpha when it recorded growth.
+            A canvas's pixels in texture order. With "encodeGrowth" (and a canvas that recorded growth), each solid pixel's
+            arrival time goes into its alpha.
             </summary>
         </member>
         <member name="M:SingularityFramework.Kitbash.KitbashTextures.OrientForTexture``1(``0[],System.Int32,System.Int32,System.Boolean)">
