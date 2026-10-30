@@ -176,6 +176,64 @@ namespace SingularityFramework.Kitbash
         }
 
         /// <summary>
+        /// A solid border around the whole shape (like the dark outline on RimWorld's own sprites), "thickness" pixels
+        /// wide. Border pixels arrive with the solid pixel they surround, so it grows in along with the picture.
+        /// </summary>
+        public void AddOutline(float thickness, Color32 color)
+        {
+            PixelMask solid = SolidMask();
+            int radius = Mathf.CeilToInt(thickness);
+            float radiusSquared = thickness * thickness;
+            var outline = new bool[pixels.Length];
+            float[] outlineArrival = null;
+            if (arrival != null)
+            {
+                outlineArrival = new float[pixels.Length];
+                for (int index = 0; index < outlineArrival.Length; index++) outlineArrival[index] = NeverArrives;
+            }
+
+            for (int row = 0; row < height; row++)
+            {
+                for (int column = 0; column < width; column++)
+                {
+                    int index = row * width + column;
+                    if (!solid.cells[index] || !IsEdge(solid, column, row)) continue;
+                    for (int rowOffset = -radius; rowOffset <= radius; rowOffset++)
+                    {
+                        for (int columnOffset = -radius; columnOffset <= radius; columnOffset++)
+                        {
+                            if (columnOffset * columnOffset + rowOffset * rowOffset > radiusSquared) continue;
+                            int targetColumn = column + columnOffset;
+                            int targetRow = row + rowOffset;
+                            if (targetColumn < 0 || targetRow < 0 || targetColumn >= width || targetRow >= height) continue;
+                            int target = targetRow * width + targetColumn;
+                            if (solid.cells[target]) continue;
+                            outline[target] = true;
+                            if (outlineArrival != null) outlineArrival[target] = Mathf.Min(outlineArrival[target], arrival[index]);
+                        }
+                    }
+                }
+            }
+
+            for (int index = 0; index < pixels.Length; index++)
+            {
+                if (!outline[index]) continue;
+                pixels[index] = color;
+                if (arrival != null) arrival[index] = outlineArrival[index];
+            }
+        }
+
+        /// <summary>
+        /// A solid pixel with open space (or the canvas edge) beside it.
+        /// </summary>
+        private static bool IsEdge(PixelMask solid, int column, int row)
+        {
+            if (column == 0 || row == 0 || column == solid.width - 1 || row == solid.height - 1) return true;
+            int index = row * solid.width + column;
+            return !solid.cells[index - 1] || !solid.cells[index + 1] || !solid.cells[index - solid.width] || !solid.cells[index + solid.width];
+        }
+
+        /// <summary>
         /// Clears everything outside "keep" (cuts a shape back out, so slits and gaps stay open).
         /// </summary>
         public void CutTo(PixelMask keep)

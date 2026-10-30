@@ -417,6 +417,17 @@
             result is one solid piece.
             </summary>
         </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashCanvas.AddOutline(System.Single,UnityEngine.Color32)">
+            <summary>
+            A solid border around the whole shape (like the dark outline on RimWorld's own sprites), "thickness" pixels
+            wide. Border pixels arrive with the solid pixel they surround, so it grows in along with the picture.
+            </summary>
+        </member>
+        <member name="M:SingularityFramework.Kitbash.KitbashCanvas.IsEdge(SingularityFramework.Kitbash.PixelMask,System.Int32,System.Int32)">
+            <summary>
+            A solid pixel with open space (or the canvas edge) beside it.
+            </summary>
+        </member>
         <member name="M:SingularityFramework.Kitbash.KitbashCanvas.CutTo(SingularityFramework.Kitbash.PixelMask)">
             <summary>
             Clears everything outside "keep" (cuts a shape back out, so slits and gaps stay open).
