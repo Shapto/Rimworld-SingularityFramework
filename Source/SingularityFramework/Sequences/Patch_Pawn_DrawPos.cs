@@ -17,7 +17,7 @@ namespace SingularityFramework.Sequences
     {
         public static void Postfix(Pawn __instance, ref Vector3 __result)
         {
-            if (__instance.jobs?.curDriver is JobDriver_LineDash dashDriver) __result = dashDriver.CurrentDrawPosition;
+            if (__instance.jobs?.curDriver is JobDriver_LineDash dashDriver && dashDriver.Dashing) __result = dashDriver.CurrentDrawPosition;
         }
     }
 }

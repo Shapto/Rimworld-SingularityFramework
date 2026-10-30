@@ -28,6 +28,8 @@ namespace SingularityFramework.Sequences
 
         private int ticksElapsed;
 
+        public bool Dashing => ticksElapsed > 0;
+
         /// <summary>
         /// Where the pawn should be drawn this frame
         /// </summary>
