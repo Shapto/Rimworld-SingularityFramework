@@ -24,6 +24,7 @@ namespace SingularityFramework.Geometry
         public bool destroysPiercedWalls;
         public bool piercesNaturalRock = true;
         public bool hitsFriendlies = true;
+        public LineStrikeSettings Copy() => (LineStrikeSettings)MemberwiseClone();
     }
 
     /// <summary>

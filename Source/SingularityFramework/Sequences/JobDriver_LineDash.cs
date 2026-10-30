@@ -26,6 +26,11 @@ namespace SingularityFramework.Sequences
 
         protected virtual CompProperties_AbilityLineDash DashProps => job.ability?.CompOfType<CompAbilityEffect_LineDash>()?.Props;
 
+        /// <summary>
+        /// What the dash deals to whatever it passes through; a subclass can work it out per dash (from a weapon, say).
+        /// </summary>
+        protected virtual LineStrikeSettings StrikeSettings => DashProps.strikeSettings;
+
         private int ticksElapsed;
 
         public bool Dashing => ticksElapsed > 0;
@@ -71,7 +76,7 @@ namespace SingularityFramework.Sequences
             }
 
             if (lineCells == null) lineCells = LineStrike.CellsOnLine(startCell, job.targetA.Cell);
-            if (lineStrike == null) lineStrike = new LineStrike(pawn, dashProps.strikeSettings);
+            if (lineStrike == null) lineStrike = new LineStrike(pawn, StrikeSettings);
             if (lineCells.Count == 0)
             {
                 EndJobWith(JobCondition.Succeeded);
