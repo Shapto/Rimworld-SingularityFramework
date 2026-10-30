@@ -24,7 +24,7 @@ namespace SingularityFramework.Sequences
         private List<IntVec3> lineCells;
         private LineStrike lineStrike;
 
-        private CompProperties_AbilityLineDash DashProps => job.ability?.CompOfType<CompAbilityEffect_LineDash>()?.Props;
+        protected virtual CompProperties_AbilityLineDash DashProps => job.ability?.CompOfType<CompAbilityEffect_LineDash>()?.Props;
 
         private int ticksElapsed;
 
