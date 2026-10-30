@@ -1160,6 +1160,11 @@
             What the dash deals to whatever it passes through; a subclass can work it out per dash (from a weapon, say).
             </summary>
         </member>
+        <member name="P:SingularityFramework.Sequences.JobDriver_LineDash.MainTarget">
+            <summary>
+            Who the dash is aimed at: always hit, friendly or not. By default the dash's own target.
+            </summary>
+        </member>
         <member name="P:SingularityFramework.Sequences.JobDriver_LineDash.CurrentDrawPosition">
             <summary>
             Where the pawn should be drawn this frame

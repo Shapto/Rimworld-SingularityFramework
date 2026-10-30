@@ -31,6 +31,11 @@ namespace SingularityFramework.Sequences
         /// </summary>
         protected virtual LineStrikeSettings StrikeSettings => DashProps.strikeSettings;
 
+        /// <summary>
+        /// Who the dash is aimed at: always hit, friendly or not. By default the dash's own target.
+        /// </summary>
+        protected virtual LocalTargetInfo MainTarget => job.targetA;
+
         private int ticksElapsed;
 
         public bool Dashing => ticksElapsed > 0;
@@ -93,7 +98,7 @@ namespace SingularityFramework.Sequences
             while (cellsEntered < cellsReached)
             {
                 IntVec3 nextCell = lineCells[cellsEntered];
-                if (!lineStrike.HitCell(nextCell, job.targetA))
+                if (!lineStrike.HitCell(nextCell, MainTarget))
                 {
                     // A surviving wall: stop in the last cell reached.
                     EndJobWith(JobCondition.Incompletable);
