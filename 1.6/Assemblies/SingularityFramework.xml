@@ -1155,6 +1155,11 @@
             so it stays hittable, it damages what it meets, and stops early if a wall survives being hit.
             </summary>
         </member>
+        <member name="P:SingularityFramework.Sequences.JobDriver_LineDash.StrikeSettings">
+            <summary>
+            What the dash deals to whatever it passes through; a subclass can work it out per dash (from a weapon, say).
+            </summary>
+        </member>
         <member name="P:SingularityFramework.Sequences.JobDriver_LineDash.CurrentDrawPosition">
             <summary>
             Where the pawn should be drawn this frame
